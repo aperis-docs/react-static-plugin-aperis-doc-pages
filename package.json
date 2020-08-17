@@ -1,0 +1,31 @@
+{
+  "name": "@riboseinc/react-static-plugin-aperis-doc-pages",
+  "version": "1.0.0-pre1",
+  "description": "",
+  "main": "node.api.js",
+  "repository": "git@github.com:riboseinc/react-static-plugin-aperis-doc-pages.git",
+  "author": "Ribose Open <open@ribose.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "babel src --out-dir .",
+    "watch": "yarn build --watch",
+    "test": "yarn format",
+    "format": "prettier 'src/**/*.js' --write",
+    "preversion": "yarn build"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2"
+  },
+  "dependencies": {
+    "asciidoctor": "^2.2.0",
+    "directory-tree": "^2.2.4",
+    "js-yaml": "^3.14.0",
+    "probe-image-size": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react-static": "^7"
+  }
+}
