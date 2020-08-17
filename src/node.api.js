@@ -30,20 +30,24 @@ class SectionJSONExtractor {
 asciidoctor.ConverterFactory.register(new SectionJSONExtractor(), ['sectionJSON'])
 
 
-export default ({ docsPath }) => ({
+export default ({ sourcePath, urlPrefix, template }) => ({
   getRoutes: async (routes, state) => {
-    const docsDirTree = dirTree(docsPath, { extensions: /\.yaml$/ });
-    const docsNav = await Promise.all(docsDirTree.children.filter(isValid).map(c => getDocsPageItems(c)));
-    return [
-      ...routes,
-      ...[docsDirTree].map(e => dirEntryToDocsRoute(e, docsNav)),
-    ];
+    const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
+    if (docsDirTree) {
+      const docsNav = await Promise.all(docsDirTree.children.filter(isValid).map(c => getDocsPageItems(c)));
+      return [
+        ...routes,
+        ...[docsDirTree].map(e => dirEntryToDocsRoute(e, docsNav, template)),
+      ];
+    } else {
+      return routes;
+    }
   },
 
   afterExport: async state => {
-    const docsURLPrefix = 'docs/';
-    const docsSrcPrefix = 'docs';
-    const docsOutPrefix = 'dist/docs';
+    const docsURLPrefix = `${urlPrefix}/`;
+    const docsSrcPrefix = path.basename(sourcePath);
+    const docsOutPrefix = `dist/${urlPrefix}`;
 
     for (const r of state.routes) {
       if (r.path.indexOf(docsURLPrefix) === 0) {
@@ -66,15 +70,15 @@ export default ({ docsPath }) => ({
 });
 
 
-function dirEntryToDocsRoute(entry, nav) {
+function dirEntryToDocsRoute(entry, nav, template) {
   const _isIndexFile = entry.type !== 'file';
   const route = {
     path: `${noExt(entry.name) || '/'}`,
     _isIndexFile,
     children: entry.type !== 'file'
-      ? entry.children.filter(isValid).map(c => dirEntryToDocsRoute(c, nav))
+      ? entry.children.filter(isValid).map(c => dirEntryToDocsRoute(c, nav, template))
       : undefined,
-    template: 'src/containers/DocPage',
+    template: template,
     getData: getDocsRouteData(entry, nav),
   };
   return route;
