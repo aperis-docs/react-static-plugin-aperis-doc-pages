@@ -174,7 +174,9 @@ async function prepareMedia(basePath, filenames) {
 
   for (const fn of filenames) {
 
-    if (path.extname(fn) === '.png') {
+    const extname = path.extname(fn);
+
+    if (extname === '.png') {
       const imagePath = path.join(basePath, fn);
       const stream = fs.createReadStream(imagePath);
 
@@ -198,6 +200,11 @@ async function prepareMedia(basePath, filenames) {
           dimensions: { width, height },
         });
       }
+    } else if (extname === '.svg') {
+        media.push({
+          filename: fn,
+          type: 'image',
+        });
     }
   }
 
