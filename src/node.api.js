@@ -40,6 +40,7 @@ export default ({ sourcePath, urlPrefix, template }) => ({
         ...routes,
         ...[docsDirTree].map(e => dirEntryToDocsRoute(e, docsNav, template)),
       ];
+
     } else {
       return routes;
     }
@@ -69,6 +70,7 @@ export default ({ sourcePath, urlPrefix, template }) => ({
     return state;
   },
 });
+
 
 function dirEntryToDocsRoute(entry, nav, template) {
   const _isIndexFile = entry.type !== 'file';
@@ -226,8 +228,8 @@ const cache = {};
 
 /* Data reading utilities */
 
-const DATA_FILE_EXT = '.yaml'
-const INDEX_DATA_FILE_NAME = `index.yaml`
+const DATA_FILE_EXT = '.yaml';
+const INDEX_DATA_FILE_NAME = `index.yaml`;
 
 
 function getDataFilePathForDirTreeEntry(entry) {
@@ -236,7 +238,7 @@ function getDataFilePathForDirTreeEntry(entry) {
 
 
 function noExt(filename) {
-  return path.basename(filename, DATA_FILE_EXT)
+  return path.basename(filename, DATA_FILE_EXT);
 }
 
 
