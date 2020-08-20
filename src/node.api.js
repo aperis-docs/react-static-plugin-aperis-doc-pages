@@ -88,9 +88,8 @@ function dirEntryToDocsRoute(entry, nav, template) {
 function getDocsRouteData(entry, docsNav) {
   return async () => {
     const children = (entry.children || []).filter(isValid);
-    const dataPath = entry.type === 'file' ? entry.path : `${entry.path}/index.yaml`;
-    const _data = await yaml.load(fs.readFileSync(dataPath, { encoding: 'utf-8' }));
-    const directoryPath = path.dirname(dataPath);
+    const dataPath = getDataFilePathForDirTreeEntry(entry);
+    const _data = await getFileData(dataPath);
     const media = await prepareMedia(directoryPath, _data.media);
 
     const data = {
@@ -117,10 +116,9 @@ function getDocsRouteData(entry, docsNav) {
 
 async function getDocsPageItems(e, readContents, prefix) {
   const children = (e.children || []).filter(isValid);
-  const dataPath = e.type === 'file' ? e.path : `${e.path}/index.yaml`;
-  const directoryPath = path.dirname(dataPath);
   const urlPath = path.join(prefix || '', noExt(e.name));
-  const data = await yaml.load(fs.readFileSync(dataPath, { encoding: 'utf-8' }));
+  const dataPath = getDataFilePathForDirTreeEntry(e);
+  const data = await getFileData(dataPath);
 
   const itemData = {
     id: noExt(e.name),
@@ -134,11 +132,13 @@ async function getDocsPageItems(e, readContents, prefix) {
   if (readContents !== true) {
     return itemData;
   } else {
+    const media = await getMedia(dataPath);
+
     return {
       ...itemData,
       excerpt: data.excerpt,
       summary: asciidoctor.convert(data.summary || '', { doctype: 'inline' }),
-      media: await prepareMedia(directoryPath, data.media),
+      media,
     };
   }
 }
@@ -209,4 +209,32 @@ async function prepareMedia(basePath, filenames) {
   }
 
   return media;
+}
+
+
+
+/* Reading data with cache */
+
+const cache = {};
+
+async function getFileData(dataFilePath) {
+  const cacheKey = `file-${dataFilePath}`;
+  if (!cache[cacheKey]) {
+    cache[cacheKey] = await yaml.load(fs.readFileSync(dataFilePath, { encoding: 'utf-8' }));
+  }
+  return cache[cacheKey];
+}
+
+async function getMedia(dataFilePath) {
+  const cacheKey = `media-${dataFilePath}`;
+  const directoryPath = path.dirname(dataFilePath);
+  const _data = await getFileData(dataFilePath);
+  if (!cache[cacheKey]) {
+    cache[cacheKey] = await prepareMedia(directoryPath, _data.media);
+  }
+  return cache[cacheKey];
+}
+
+function getDataFilePathForDirTreeEntry(entry) {
+  return entry.type === 'file' ? entry.path : `${entry.path}/index.yaml`;
 }
