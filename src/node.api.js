@@ -201,10 +201,10 @@ async function prepareMedia(basePath, filenames) {
         });
       }
     } else if (extname === '.svg') {
-        media.push({
-          filename: fn,
-          type: 'image',
-        });
+      media.push({
+        filename: fn,
+        type: 'image',
+      });
     }
   }
 
