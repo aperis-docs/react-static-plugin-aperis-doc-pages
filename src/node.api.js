@@ -33,11 +33,19 @@ export default ({ sourcePath, urlPrefix, template }) => ({
   getRoutes: async (routes, state) => {
     const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
     if (docsDirTree) {
-      const docsNav = await Promise.all(
-        docsDirTree.children.filter(isValid).map(c => getDocsPageItems(c))
-      );
+
+      const [docsNav, _] = await Promise.all([
+        await Promise.all(
+          docsDirTree.children.filter(isValid).map(c => getDocsPageItems(c))
+        ),
+        await Promise.all(
+          docsDirTree.children.map(c => populateRedirects(urlPrefix, c, urlPrefix))
+        ),
+      ]);
+
       return [
         ...routes,
+        ...redirectRoutes,
         ...[docsDirTree].map(e => dirEntryToDocsRoute(e, docsNav, template)),
       ];
 
@@ -143,6 +151,29 @@ async function getDocsPageItems(e, readContents, prefix) {
     };
   }
 }
+
+
+/* Side-effects redirected routes into a global variable */
+async function populateRedirects(urlRoot, dirTreeEntry, prefix) {
+  const dataPath = getDataFilePathForDirTreeEntry(dirTreeEntry);
+  const data = await getFileData(dataPath);
+  const routePath = path.join(prefix || '', dirEntryNameToRoutePath(dirTreeEntry.name));
+
+  if (data.redirectFrom) {
+    for (const redirectedURL of data.redirectFrom) {
+      redirectRoutes.push({
+        path: path.join(urlRoot || '', redirectedURL),
+        redirect: routePath,
+      });
+    }
+  }
+  if (dirTreeEntry.type !== 'file') {
+    await Promise.all(
+      (dirTreeEntry.children || []).filter(isValid).map(c => populateRedirects(urlRoot, c, routePath))
+    );
+  }
+}
+const redirectRoutes = [];
 
 
 /* Getting data from YAML per dir tree entry */
