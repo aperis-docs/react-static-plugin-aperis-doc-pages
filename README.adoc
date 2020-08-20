@@ -41,10 +41,12 @@ yarn
 
 . Update version in package.json.
 
-. [source]
-  --
-  $ yarn build
-  $ git tag -s <new version>
-  $ git push --follow-tags
-  $ npm publish
-  --
+. {blank}
++
+[source]
+--
+$ yarn build
+$ git tag -s <new version>
+$ git push --follow-tags
+$ npm publish
+--
