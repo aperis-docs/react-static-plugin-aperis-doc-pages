@@ -26,7 +26,6 @@ class SectionJSONExtractor {
   }
 }
 
-
 asciidoctor.ConverterFactory.register(new SectionJSONExtractor(), ['sectionJSON'])
 
 
@@ -34,7 +33,9 @@ export default ({ sourcePath, urlPrefix, template }) => ({
   getRoutes: async (routes, state) => {
     const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
     if (docsDirTree) {
-      const docsNav = await Promise.all(docsDirTree.children.filter(isValid).map(c => getDocsPageItems(c)));
+      const docsNav = await Promise.all(
+        docsDirTree.children.filter(isValid).map(c => getDocsPageItems(c))
+      );
       return [
         ...routes,
         ...[docsDirTree].map(e => dirEntryToDocsRoute(e, docsNav, template)),
@@ -69,7 +70,6 @@ export default ({ sourcePath, urlPrefix, template }) => ({
   },
 });
 
-
 function dirEntryToDocsRoute(entry, nav, template) {
   const _isIndexFile = entry.type !== 'file';
   const route = {
@@ -95,7 +95,8 @@ function getDocsRouteData(entry, docsNav) {
     const data = {
       ..._data,
       contents: asciidoctor.convert(`:leveloffset: 2\n\n${_data.contents || ''}`),
-      sections: JSON.parse(asciidoctor.convert(_data.contents || '', { backend: 'sectionJSON' }) || '[]'),
+      sections: JSON.parse(
+        asciidoctor.convert(_data.contents || '', { backend: 'sectionJSON' }) || '[]'),
       summary: asciidoctor.convert(_data.summary || '', { doctype: 'inline' }),
       media,
     };
@@ -144,27 +145,27 @@ async function getDocsPageItems(e, readContents, prefix) {
 }
 
 
-const DATA_FILE_EXT = '.yaml'
-
-
-function noExt(filename) {
-  return path.basename(filename, DATA_FILE_EXT)
+/* Getting data from YAML per dir tree entry */
+async function getFileData(dataFilePath) {
+  return await cached(`file-${dataFilePath}`, async () => {
+    return await yaml.load(fs.readFileSync(dataFilePath, { encoding: 'utf-8' }));
+  });
 }
 
 
-function isValid(entry) {
-  return (
-    entry.name !== 'index.yaml' &&
-    entry.name[0] !== '.' &&
-    ((entry.children || []).length > 0 || entry.type === 'file')
-  );
+/* Getting media */
+async function getMedia(dataFilePath) {
+  return await cached(`media-${dataFilePath}`, async () => {
+    const directoryPath = path.dirname(dataFilePath);
+    const _data = await getFileData(dataFilePath);
+    return await prepareMedia(directoryPath, _data.media);
+  });
 }
 
 
 /* Goes through spceified files and attaches metadata
    (such as image dimensions).
    TODO: Can also handle resizing. */
-
 async function prepareMedia(basePath, filenames) {
   if ((filenames || []).length < 1) {
     return [];
@@ -173,7 +174,6 @@ async function prepareMedia(basePath, filenames) {
   var media = [];
 
   for (const fn of filenames) {
-
     const extname = path.extname(fn);
 
     if (extname === '.png') {
@@ -207,34 +207,42 @@ async function prepareMedia(basePath, filenames) {
       });
     }
   }
-
   return media;
 }
 
 
-
-/* Reading data with cache */
-
+/* Very unsophisticated cache to reduce unnecessary I/O */
+async function cached(key, valueObtainer) {
+  if (cache[key] !== undefined) {
+    return cache[key];
+  } else {
+    const value = await valueObtainer();
+    cache[key] = value;
+    return value;
+  }
+}
 const cache = {};
 
-async function getFileData(dataFilePath) {
-  const cacheKey = `file-${dataFilePath}`;
-  if (!cache[cacheKey]) {
-    cache[cacheKey] = await yaml.load(fs.readFileSync(dataFilePath, { encoding: 'utf-8' }));
-  }
-  return cache[cacheKey];
-}
 
-async function getMedia(dataFilePath) {
-  const cacheKey = `media-${dataFilePath}`;
-  const directoryPath = path.dirname(dataFilePath);
-  const _data = await getFileData(dataFilePath);
-  if (!cache[cacheKey]) {
-    cache[cacheKey] = await prepareMedia(directoryPath, _data.media);
-  }
-  return cache[cacheKey];
-}
+/* Data reading utilities */
+
+const DATA_FILE_EXT = '.yaml'
+const INDEX_DATA_FILE_NAME = `index.yaml`
+
 
 function getDataFilePathForDirTreeEntry(entry) {
-  return entry.type === 'file' ? entry.path : `${entry.path}/index.yaml`;
+  return entry.type === 'file' ? entry.path : `${entry.path}/${INDEX_DATA_FILE_NAME}`;
+}
+
+
+function noExt(filename) {
+  return path.basename(filename, DATA_FILE_EXT)
+}
+
+
+function isValid(dirTreeEntry) {
+  return (
+    dirTreeEntry.name !== INDEX_DATA_FILE_NAME &&
+    dirTreeEntry.name[0] !== '.' &&
+    ((dirTreeEntry.children || []).length > 0 || dirTreeEntry.type === 'file'));
 }
