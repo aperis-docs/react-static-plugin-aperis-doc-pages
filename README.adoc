@@ -8,10 +8,12 @@ Used with link:https://github.com/riboseinc/aperis-doc-pages/[aperis-doc-pages].
 
 TODO: Bundle a test project in this repository.
 
-. [source]
-  --
-  $ yarn build
-  --
+. {blank}
++
+[source]
+--
+$ yarn build
+--
 
 . Replace package reference in your test project’s package.json
 +
