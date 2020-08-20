@@ -67,28 +67,42 @@ export default ({ sourcePath, urlPrefix, template }) => ({
 });
 
 
-function dirEntryToDocsRoute(entry, nav, template) {
+function dirEntryToDocsRoute(entry, nav, template, parents) {
   return {
     path: dirEntryNameToRoutePath(entry.name),
     _isIndexFile: entry.type !== 'file',
     children: entry.type !== 'file'
-      ? entry.children.filter(isValid).map(c => dirEntryToDocsRoute(c, nav, template))
+      ? entry.children.filter(isValid).map(c =>
+          dirEntryToDocsRoute(c, nav, template, [ ...(parents || []), entry ])
+        )
       : undefined,
     template: template,
-    getData: getDocsRouteData(entry, nav),
+    getData: getDocsRouteData(entry, nav, parents || []),
   };
 }
 
 
-function getDocsRouteData(entry, docsNav) {
+function getDocsRouteData(entry, docsNav, parentEntries) {
   return async () => {
     const children = (entry.children || []).filter(isValid);
     const dataPath = getDataFilePathForDirTreeEntry(entry);
     const _data = await getFileData(dataPath);
     const media = await getMedia(dataPath);
 
+    const breadcrumbs = [];
+    for (const pe of parentEntries) {
+      const peDataPath = path.join(
+        path.dirname(getDataFilePathForDirTreeEntry(pe)),
+        'index.yaml');
+      const peData = await getFileData(peDataPath);
+      breadcrumbs.push({
+        title: peData.title,
+      });
+    }
+
     const data = {
       ..._data,
+      breadcrumbs,
       contents: asciidoctor.convert(`:leveloffset: 2\n\n${_data.contents || ''}`),
       sections: JSON.parse(
         asciidoctor.convert(_data.contents || '', { backend: 'sectionJSON' }) || '[]'),
