@@ -12,21 +12,21 @@ const asciidoctor = asciidoctorjs();
 /* Translates an Asciidoc document into a JSON list of top-level sections. */
 class SectionJSONExtractor {
   convert(node, transform) {
-    const nodeName = transform || node.getNodeName()
+    const nodeName = transform || node.getNodeName();
     if (nodeName === 'embedded') {
-      return `[\n${node.getContent().replace(/,$/, '')}\n]`
+      return `[\n${node.getContent().replace(/,$/, '')}\n]`;
     } else if (nodeName === 'section' && node.getLevel() === 1) {
       return `\n  ${JSON.stringify({
         id: node.getId(),
         title: node.getTitle(),
-      })},`
+      })},`;
     } else {
-      return ''
+      return '';
     }
   }
 }
 
-asciidoctor.ConverterFactory.register(new SectionJSONExtractor(), ['sectionJSON'])
+asciidoctor.ConverterFactory.register(new SectionJSONExtractor(), ['sectionJSON']);
 
 
 export default ({ sourcePath, urlPrefix, template }) => ({
