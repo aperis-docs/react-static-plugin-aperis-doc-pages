@@ -90,7 +90,7 @@ function getDocsRouteData(entry, docsNav) {
     const children = (entry.children || []).filter(isValid);
     const dataPath = getDataFilePathForDirTreeEntry(entry);
     const _data = await getFileData(dataPath);
-    const media = await prepareMedia(directoryPath, _data.media);
+    const media = await getMedia(dataPath);
 
     const data = {
       ..._data,
