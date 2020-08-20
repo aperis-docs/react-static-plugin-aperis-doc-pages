@@ -73,17 +73,15 @@ export default ({ sourcePath, urlPrefix, template }) => ({
 
 
 function dirEntryToDocsRoute(entry, nav, template) {
-  const _isIndexFile = entry.type !== 'file';
-  const route = {
-    path: `${noExt(entry.name) || '/'}`,
-    _isIndexFile,
+  return {
+    path: dirEntryNameToRoutePath(entry.name),
+    _isIndexFile: entry.type !== 'file',
     children: entry.type !== 'file'
       ? entry.children.filter(isValid).map(c => dirEntryToDocsRoute(c, nav, template))
       : undefined,
     template: template,
     getData: getDocsRouteData(entry, nav),
   };
-  return route;
 }
 
 
@@ -119,7 +117,7 @@ function getDocsRouteData(entry, docsNav) {
 
 async function getDocsPageItems(e, readContents, prefix) {
   const children = (e.children || []).filter(isValid);
-  const urlPath = path.join(prefix || '', noExt(e.name));
+  const urlPath = path.join(prefix || '', dirEntryNameToRoutePath(e.name));
   const dataPath = getDataFilePathForDirTreeEntry(e);
   const data = await getFileData(dataPath);
 
@@ -239,6 +237,11 @@ function getDataFilePathForDirTreeEntry(entry) {
 
 function noExt(filename) {
   return path.basename(filename, DATA_FILE_EXT);
+}
+
+
+function dirEntryNameToRoutePath(name) {
+  return `${noExt(name) || '/'}`;
 }
 
 
