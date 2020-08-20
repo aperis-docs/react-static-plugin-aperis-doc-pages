@@ -2,9 +2,13 @@
 
 Used with link:https://github.com/riboseinc/aperis-doc-pages/[aperis-doc-pages].
 
-== Release process
+== Development
 
-=== Test
+=== Making changes
+
+Use Commitizen guidelines when writing commit messages.
+
+=== Testing
 
 TODO: Bundle a test project in this repository.
 
@@ -37,7 +41,7 @@ yarn
 
 . Rebuild test project and confirm functionality
 
-=== Publish
+=== Publishing
 
 . Update version in package.json.
 
