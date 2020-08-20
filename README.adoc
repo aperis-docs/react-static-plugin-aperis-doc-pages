@@ -4,22 +4,18 @@ Used with link:https://github.com/riboseinc/aperis-doc-pages/[aperis-doc-pages].
 
 == Development
 
-=== Making changes
+=== Preparation
 
-Use Commitizen guidelines when writing commit messages.
-
-=== Testing
-
-TODO: Bundle a test project in this repository.
-
-. {blank}
+. Build this package locally
 +
 [source]
 --
-$ yarn build
+/path/to/this/repo$ yarn
 --
 
-. Replace package reference in your test project’s package.json
+In your local test project that uses this package:
+
+. Replace this package’s path package.json
 +
 [source]
 --
@@ -36,21 +32,43 @@ $ yarn build
 +
 [source]
 --
-yarn
+/path/to/project$ yarn
 --
 
-. Rebuild test project and confirm functionality
+TODO: Bundle a test project in this repository.
+
+=== Making changes
+
+Use Commitizen guidelines when writing commit messages.
+
+=== Testing changes
+
+. Rebuild this package
++
+[source]
+--
+/path/to/this/repo$ yarn build
+--
+
+. Bring updated version into your test project
++
+[source]
+--
+/path/to/project$ yarn upgrade "@riboseinc/react-static-plugin-aperis-doc-pages"
+--
+
+. Rebuild your test project and run tests.
 
 === Publishing
 
-. Update version in package.json.
+. Increment version in package.json appropriately with semantic versioning guidelines.
 
 . {blank}
 +
 [source]
 --
-$ yarn build
-$ git tag -s <new version>
-$ git push --follow-tags
-$ npm publish
+/path/to/this/repo$ yarn build
+/path/to/this/repo$ git tag -s <new version>
+/path/to/this/repo$ git push --follow-tags
+/path/to/this/repo$ npm publish
 --
