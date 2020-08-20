@@ -1,0 +1,48 @@
+= react-static plugin for Aperis doc pages
+
+Used with link:https://github.com/riboseinc/aperis-doc-pages/[aperis-doc-pages].
+
+== Release process
+
+=== Test
+
+TODO: Bundle a test project in this repository.
+
+. [source]
+  --
+  $ yarn build
+  --
+
+. Replace package reference in your test project’s package.json
++
+[source]
+--
+  ...
+  "dependencies": [
+    ...
+    "@riboseinc/react-static-plugin-aperis-doc-pages": "<path to your local working copy root of this repo>",
+    ...
+  ]
+  ...
+--
+
+. Fetch updated dependency
++
+[source]
+--
+yarn
+--
+
+. Rebuild test project and confirm functionality
+
+=== Publish
+
+. Update version in package.json.
+
+. [source]
+  --
+  $ yarn build
+  $ git tag -s <new version>
+  $ git push --follow-tags
+  $ npm publish
+  --
