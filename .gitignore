@@ -1,5 +1,7 @@
 node_modules
+compiled
 /node.api.js
 /pageMedia.js
 /SimpleCache.js
 /AsciidocSectionListConverter.js
+/types.js

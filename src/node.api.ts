@@ -1,12 +1,23 @@
 import fs from 'fs';
 import path from 'path';
-import dirTree from 'directory-tree';
+import dirTree, { DirectoryTree } from 'directory-tree';
 import yaml from 'js-yaml';
 import asciidoctorjs from 'asciidoctor';
+
+import { Route } from 'react-static';
+import { DocPage, DocsPageItem, MediaItem } from '@riboseinc/aperis-doc-pages/types';
+
+import {
+  ReactStaticState,
+  PluginConfig,
+  DocsRoute,
+  SourceDocPageData,
+} from './types';
 
 import SimpleCache from './SimpleCache';
 import AsciidocSectionListConverter from './AsciidocSectionListConverter';
 import { prepareMedia } from './pageMedia';
+
 
 
 const asciidoctor = asciidoctorjs();
@@ -16,17 +27,17 @@ asciidoctor.ConverterFactory.register(new AsciidocSectionListConverter(), ['sect
 const cache = new SimpleCache();
 
 
-export default ({ sourcePath, urlPrefix, template }) => ({
-  getRoutes: async (routes, state) => {
+export default ({ sourcePath, urlPrefix, template }: PluginConfig) => ({
+  getRoutes: async (routes: Route[], _state: ReactStaticState) => {
     const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
     if (docsDirTree) {
 
       const [docsNav, redirectRoutes] = await Promise.all([
         await Promise.all(
-          docsDirTree.children.filter(isValid).map(c => getDocsPageItems(c))
+          (docsDirTree.children || []).filter(isValid).map(c => getDocsPageItems(c))
         ),
         await Promise.all(
-          docsDirTree.children.map(c => getRedirects(urlPrefix, c, urlPrefix))
+          (docsDirTree.children || []).map(c => getRedirects(urlPrefix, c, urlPrefix))
         ),
       ]);
 
@@ -41,7 +52,7 @@ export default ({ sourcePath, urlPrefix, template }) => ({
     }
   },
 
-  afterExport: async state => {
+  afterExport: async (state: ReactStaticState) => {
     const docsURLPrefix = `${urlPrefix}/`;
     const docsSrcPrefix = path.basename(sourcePath);
     const docsOutPrefix = `dist/${urlPrefix}`;
@@ -67,12 +78,17 @@ export default ({ sourcePath, urlPrefix, template }) => ({
 });
 
 
-function dirEntryToDocsRoute(entry, nav, template, parents) {
+function dirEntryToDocsRoute(
+  entry: DirectoryTree,
+  nav: DocsPageItem[],
+  template: string,
+  parents?: DirectoryTree[],
+): DocsRoute {
   return {
     path: dirEntryNameToRoutePath(entry.name),
     _isIndexFile: entry.type !== 'file',
     children: entry.type !== 'file'
-      ? entry.children.filter(isValid).map(c =>
+      ? (entry.children || []).filter(isValid).map(c =>
           dirEntryToDocsRoute(c, nav, template, [ ...(parents || []), entry ])
         )
       : undefined,
@@ -82,7 +98,11 @@ function dirEntryToDocsRoute(entry, nav, template, parents) {
 }
 
 
-function getDocsRouteData(entry, docsNav, parentEntries) {
+function getDocsRouteData(
+  entry: DirectoryTree,
+  docsNav: DocsPageItem[],
+  parentEntries: DirectoryTree[],
+): () => Promise<{ docsNav: DocsPageItem[], docPage: DocPage }> {
   return async () => {
     const children = (entry.children || []).filter(isValid);
     const dataPath = getDataFilePathForDirTreeEntry(entry);
@@ -103,10 +123,11 @@ function getDocsRouteData(entry, docsNav, parentEntries) {
     const data = {
       ..._data,
       breadcrumbs,
-      contents: asciidoctor.convert(`:leveloffset: 2\n\n${_data.contents || ''}`),
+      contents: asciidoctor.convert(`:leveloffset: 2\n\n${_data.contents || ''}`) as string,
       sections: JSON.parse(
-        asciidoctor.convert(_data.contents || '', { backend: 'sectionJSON' }) || '[]'),
-      summary: asciidoctor.convert(_data.summary || '', { doctype: 'inline' }),
+        (asciidoctor.convert(_data.contents || '', { backend: 'sectionJSON' }) as string)
+        || '[]'),
+      summary: asciidoctor.convert(_data.summary || '', { doctype: 'inline' }) as string,
       media,
     };
 
@@ -124,13 +145,18 @@ function getDocsRouteData(entry, docsNav, parentEntries) {
 }
 
 
-async function getDocsPageItems(e, readContents, prefix) {
+async function getDocsPageItems(
+  e: DirectoryTree,
+  readContents?: boolean,
+  prefix?: string,
+): Promise<DocsPageItem> {
+
   const children = (e.children || []).filter(isValid);
   const urlPath = path.join(prefix || '', dirEntryNameToRoutePath(e.name));
   const dataPath = getDataFilePathForDirTreeEntry(e);
   const data = await getFileData(dataPath);
 
-  const itemData = {
+  const itemData: DocsPageItem = {
     id: noExt(e.name),
     path: urlPath,
     importance: data.importance,
@@ -143,11 +169,12 @@ async function getDocsPageItems(e, readContents, prefix) {
     return itemData;
   } else {
     const media = await getMedia(dataPath);
+    const summary: string = asciidoctor.convert(data.summary || '', { doctype: 'inline' }) as string;
 
     return {
       ...itemData,
       excerpt: data.excerpt,
-      summary: asciidoctor.convert(data.summary || '', { doctype: 'inline' }),
+      summary,
       media,
     };
   }
@@ -155,7 +182,7 @@ async function getDocsPageItems(e, readContents, prefix) {
 
 
 /* Recursively collect redirects from given and nested directory tree entries */
-async function getRedirects(urlRoot, dirTreeEntry, prefix) {
+async function getRedirects(urlRoot: string, dirTreeEntry: DirectoryTree, prefix: string) {
   const dataPath = getDataFilePathForDirTreeEntry(dirTreeEntry);
   const data = await getFileData(dataPath);
   const routePath = path.join(prefix || '', dirEntryNameToRoutePath(dirTreeEntry.name));
@@ -171,7 +198,7 @@ async function getRedirects(urlRoot, dirTreeEntry, prefix) {
     }
   }
 
-  const childRedirectRoutes = dirTreeEntry.type !== 'file'
+  const childRedirectRoutes: Route[][] = dirTreeEntry.type !== 'file'
     ? await Promise.all(
         (dirTreeEntry.children || []).
         filter(isValid).
@@ -183,7 +210,7 @@ async function getRedirects(urlRoot, dirTreeEntry, prefix) {
 
 
 /* Getting data from YAML per dir tree entry */
-async function getFileData(dataFilePath) {
+async function getFileData(dataFilePath: string): Promise<SourceDocPageData> {
   return await cache.get(`file-${dataFilePath}`, async () => {
     return await yaml.load(fs.readFileSync(dataFilePath, { encoding: 'utf-8' }));
   });
@@ -191,7 +218,7 @@ async function getFileData(dataFilePath) {
 
 
 /* Getting media */
-async function getMedia(dataFilePath) {
+async function getMedia(dataFilePath: string): Promise<MediaItem[]> {
   return await cache.get(`media-${dataFilePath}`, async () => {
     const directoryPath = path.dirname(dataFilePath);
     const _data = await getFileData(dataFilePath);
@@ -206,22 +233,22 @@ const DATA_FILE_EXT = '.yaml';
 const INDEX_DATA_FILE_NAME = `index.yaml`;
 
 
-function getDataFilePathForDirTreeEntry(entry) {
+function getDataFilePathForDirTreeEntry(entry: DirectoryTree): string {
   return entry.type === 'file' ? entry.path : `${entry.path}/${INDEX_DATA_FILE_NAME}`;
 }
 
 
-function noExt(filename) {
+function noExt(filename: string): string {
   return path.basename(filename, DATA_FILE_EXT);
 }
 
 
-function dirEntryNameToRoutePath(name) {
+function dirEntryNameToRoutePath(name: string): string {
   return `${noExt(name) || '/'}`;
 }
 
 
-function isValid(dirTreeEntry) {
+function isValid(dirTreeEntry: DirectoryTree): boolean {
   return (
     dirTreeEntry.name !== INDEX_DATA_FILE_NAME &&
     dirTreeEntry.name[0] !== '.' &&

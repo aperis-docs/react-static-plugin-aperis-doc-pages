@@ -6,7 +6,7 @@ import probeImageSize from 'probe-image-size';
 /* Goes through spceified files and attaches metadata
    (such as image dimensions).
    TODO: Can also handle resizing. */
-export async function prepareMedia(basePath, filenames) {
+export async function prepareMedia(basePath: string, filenames: string[]) {
   if ((filenames || []).length < 1) {
     return [];
   }
