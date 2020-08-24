@@ -4,7 +4,7 @@
   "description": "",
   "main": "node.api.js",
   "repository": "git@github.com:riboseinc/react-static-plugin-aperis-doc-pages.git",
-  "author": "Ribose Open <open@ribose.com>",
+  "author": "Ribose Inc. <open.source@ribose.com>",
   "license": "MIT",
   "private": false,
   "files": [
