@@ -45,6 +45,11 @@ export async function prepareMedia(basePath: string, filenames: string[]) {
         filename: fn,
         type: 'image',
       });
+    } else if (extname === '.mp4') {
+      media.push({
+        filename: fn,
+        type: 'video',
+      });
     }
   }
   return media;
