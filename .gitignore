@@ -1,5 +1,6 @@
 node_modules
 compiled
+/yarn-error.log
 /node.api.js
 /pageMedia.js
 /SimpleCache.js
