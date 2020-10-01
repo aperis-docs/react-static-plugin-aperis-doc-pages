@@ -32,6 +32,8 @@ export default ({ sourcePath, urlPrefix, template }: PluginConfig) => ({
     const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
     if (docsDirTree) {
 
+      docsDirTree.name = urlPrefix;
+
       const [docsNav, redirectRoutes] = await Promise.all([
         await Promise.all(
           (docsDirTree.children || []).filter(isValid).map(c => getDocsPageItems(c))
