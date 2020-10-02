@@ -70,5 +70,6 @@ Use Commitizen guidelines when writing commit messages.
 /path/to/this/repo$ yarn build
 /path/to/this/repo$ git tag -s <new version>
 /path/to/this/repo$ git push --follow-tags
+/path/to/this/repo$ cd dist
 /path/to/this/repo$ npm publish
 --
