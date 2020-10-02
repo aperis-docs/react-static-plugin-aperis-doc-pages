@@ -269,7 +269,6 @@ function convertRichContentToHTML(
     opts?: RichContentConversionOptions,
 ): string {
   if (isProseMirrorStructure(data)) {
-    console.debug("Rendering: Is ProseMirror", data)
     const dom = new jsdom.JSDOM('<!DOCTYPE html><div id="content"></div>')
     const targetDoc = dom.window.document
     const targetElement = targetDoc.querySelector('div')
@@ -282,12 +281,11 @@ function convertRichContentToHTML(
     if (html !== undefined) {
       return html
     } else {
-      console.error("Unable to render ProseMirror contents")
+      console.error("Unable to render ProseMirror contents", data)
       throw new Error("Unable to render ProseMirror contents")
     }
 
   } else {
-    console.debug("Rendering: Is Asciidoc", data)
     let adocContents: string
     let doctorOptions: Record<string, any> | undefined
     if (opts?.headingLevelOffset !== undefined) {
@@ -311,10 +309,8 @@ function getSectionList(
     data: string | ProseMirrorStructure,
 ): { id: string, title: string }[] {
   if (isProseMirrorStructure(data)) {
-    console.debug("Listing sections: Is ProseMirror", data)
     return []; // TODO: Get proper section list from ProseMirror structure
   } else {
-    console.debug("Listing sections: Is Asciidoc", data)
     return JSON.parse(
       (asciidoctor.convert(data, { backend: 'sectionJSON' }) as string)
       || '[]');
