@@ -2,7 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import dirTree, { DirectoryTree } from 'directory-tree';
 import yaml from 'js-yaml';
+
 import asciidoctorjs from 'asciidoctor';
+import { Node, DOMSerializer } from 'prosemirror-model';
+import { default as proseMirrorSchema } from './prosemirror-schema'
+import jsdom from 'jsdom';
 
 import { Route } from 'react-static';
 import { DocsPageItem, MediaItem } from '@riboseinc/aperis-doc-pages/types';
@@ -19,10 +23,6 @@ import SimpleCache from './SimpleCache';
 import AsciidocSectionListConverter from './AsciidocSectionListConverter';
 import { prepareMedia } from './pageMedia';
 
-
-
-const asciidoctor = asciidoctorjs();
-asciidoctor.ConverterFactory.register(new AsciidocSectionListConverter(), ['sectionJSON']);
 
 
 const cache = new SimpleCache();
@@ -143,11 +143,9 @@ function getDocsRouteData(
     const data = {
       ..._data,
       breadcrumbs,
-      contents: asciidoctor.convert(`:leveloffset: 2\n\n${_data.contents || ''}`) as string,
-      sections: JSON.parse(
-        (asciidoctor.convert(_data.contents || '', { backend: 'sectionJSON' }) as string)
-        || '[]'),
-      summary: asciidoctor.convert(_data.summary || '', { doctype: 'inline' }) as string,
+      contents: convertRichContentToHTML(_data.contents || ''),
+      sections: getSectionList(_data.contents || ''),
+      summary: convertRichContentToHTML(_data.summary || '', { inline: true }),
       media,
     };
 
@@ -189,7 +187,7 @@ async function getDocsPageItems(
     return itemData;
   } else {
     const media = await getMedia(dataPath);
-    const summary: string = asciidoctor.convert(data.summary || '', { doctype: 'inline' }) as string;
+    const summary: string = convertRichContentToHTML(data.summary || '', { inline: true });
 
     return {
       ...itemData,
@@ -244,6 +242,77 @@ async function getMedia(dataFilePath: string): Promise<MediaItem[]> {
     const _data = await getFileData(dataFilePath);
     return await prepareMedia(directoryPath, _data.media);
   });
+}
+
+
+/* Rich content conversion utilities */
+
+
+const asciidoctor = asciidoctorjs();
+asciidoctor.ConverterFactory.register(new AsciidocSectionListConverter(), ['sectionJSON']);
+
+
+type ProseMirrorStructure = { doc: Record<string, any> }
+interface RichContentConversionOptions {
+  headingLevelOffset?: number
+  inline?: boolean
+}
+
+
+function isProseMirrorStructure(data: string | ProseMirrorStructure): data is ProseMirrorStructure {
+  return data.hasOwnProperty('doc');
+}
+
+
+function convertRichContentToHTML(
+    data: string | ProseMirrorStructure,
+    opts?: RichContentConversionOptions,
+): string {
+  if (isProseMirrorStructure(data)) {
+    console.debug("Rendering: Is ProseMirror", data)
+    const dom = new jsdom.JSDOM('<!DOCTYPE html><div id="content"></div>')
+    const targetDoc = dom.window.document
+    const targetElement = targetDoc.querySelector('div')
+    const node = Node.fromJSON(proseMirrorSchema, data.doc)
+    DOMSerializer.
+      fromSchema(proseMirrorSchema).
+      // @ts-ignore: 2554 (serializeFragment supports third argument, but is not properly typed)
+      serializeFragment(node, { document: targetDoc }, targetElement)
+    return dom.serialize()
+
+  } else {
+    console.debug("Rendering: Is Asciidoc", data)
+    let adocContents: string
+    let doctorOptions: Record<string, any> | undefined
+    if (opts?.headingLevelOffset !== undefined) {
+      adocContents = `
+        :leveloffset: ${opts.headingLevelOffset}\n\n${data || ''}
+      `
+    } else {
+      adocContents = data
+    }
+    if (opts?.inline) {
+      doctorOptions = { doctype: 'inline' }
+    } else {
+      doctorOptions = undefined
+    }
+    return asciidoctor.convert(adocContents, doctorOptions) as string;
+  }
+}
+
+
+function getSectionList(
+    data: string | ProseMirrorStructure,
+): { id: string, title: string }[] {
+  if (isProseMirrorStructure(data)) {
+    console.debug("Listing sections: Is ProseMirror", data)
+    return []; // TODO: Get proper section list from ProseMirror structure
+  } else {
+    console.debug("Listing sections: Is Asciidoc", data)
+    return JSON.parse(
+      (asciidoctor.convert(data, { backend: 'sectionJSON' }) as string)
+      || '[]');
+  }
 }
 
 
