@@ -278,7 +278,13 @@ function convertRichContentToHTML(
       fromSchema(proseMirrorSchema).
       // @ts-ignore: 2554 (serializeFragment supports third argument, but is not properly typed)
       serializeFragment(node, { document: targetDoc }, targetElement)
-    return dom.serialize()
+    const html = targetDoc.querySelector('div')?.innerHTML
+    if (html !== undefined) {
+      return html
+    } else {
+      console.error("Unable to render ProseMirror contents")
+      throw new Error("Unable to render ProseMirror contents")
+    }
 
   } else {
     console.debug("Rendering: Is Asciidoc", data)
