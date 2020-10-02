@@ -1,6 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import asciidocBaseCSS from '!!raw-loader!./asciidoctor.css'
+import colors from './colors'
 
 
 const Asciidoc:
@@ -38,7 +39,7 @@ const asciidocBase = css`
   }
 
   a, a:link, a:visited {
-    color: #ff1d25;
+    color: ${colors.link.css()};
   }
 `
 
@@ -49,14 +50,23 @@ const AsciidocStyledInline = styled.p`
 const AsciidocStyled = styled.div`
   ${asciidocBase}
 
-  .admonitionblock .content {
-    margin-bottom: 1em;
-    font-size: inherit;
-  }
+  .admonitionblock {
+    .content {
+      font-size: inherit;
+    }
 
-  @media screen and (max-width: 800px) {
-    .admonitionblock {
-      > table > tbody > tr {
+    > table > tbody > tr {
+      > td.icon {
+        padding: 0;
+        font-size: .95em; // matches asciidoctor.css
+        line-height: 1.7; // matches asciidoctor.css
+      }
+      > td.content {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      @media screen and (max-width: 800px) {
         display: flex;
         flex-flow: column nowrap;
         align-items: flex-start;
@@ -64,16 +74,33 @@ const AsciidocStyled = styled.div`
     }
   }
 
+  .imageblock, .admonitionblock, .listingblock {
+    margin-top: 1em;
+  }
+
+  .listingblock {
+    @media screen and (max-width: 800px) {
+      margin-left: -1rem;
+      margin-right: -1rem;
+
+      > .content > pre {
+        padding-left: 1rem;
+      }
+    }
+  }
+
+
+  // List item spacing
+
   p, ol > li p, ul > li p {
     margin-bottom: 0;
   }
 
+
+  // Paragraph indentation
+
   p + p {
     text-indent: 1.5em;
-  }
-
-  .imageblock, .admonitionblock {
-    margin-top: 1em;
   }
 
   .paragraph + .paragraph {
@@ -82,22 +109,39 @@ const AsciidocStyled = styled.div`
     }
   }
 
+
+  // Image dimensions
+
   @media screen and (min-width: 800px) {
     img {
       max-width: 50vw;
       max-height: 50vh;
     }
+    .imageblock.unbounded-image img {
+      max-width: 100%;
+      max-height: unset;
+    }
   }
 
-  img {
-    box-shadow: rgba(0, 0, 0, 0.15) .1rem .1rem 1rem;
-  }
   .imageblock {
     padding: 1.2rem;
     background: whiteSmoke;
 
     .content {
       text-align: center;
+    }
+
+    img {
+      box-shadow: rgba(0, 0, 0, 0.15) .1rem .1rem 1rem;
+    }
+
+    &.unbounded-image {
+      padding: unset;
+      background: unset;
+
+      img {
+        box-shadow: unset;
+      }
     }
   }
 `

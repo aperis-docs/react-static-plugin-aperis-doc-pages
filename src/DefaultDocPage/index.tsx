@@ -25,6 +25,8 @@ export default () => {
   const rootURLPath = urlPrefix === '' ? urlPrefix : `/${urlPrefix}/`
   const bannerSrcPrefix = urlPrefix === '' ? '/' : `/${urlPrefix}/`
 
+  console.debug("Rendering page breadcrumbs", docPage?.data?.breadcrumbs)
+
   return (
     <>
       <Helmet>

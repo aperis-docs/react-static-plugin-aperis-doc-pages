@@ -2,12 +2,12 @@ import React from 'react'
 import { Link as RouterLink, useLocation } from '@reach/router'
 import { useRoutePath } from 'react-static'
 import styled, { css } from 'styled-components'
-import chroma from 'chroma-js'
+import colors from './colors'
 
 
 const LINK_BORDER = `1px dotted silver`
 
-const linkColor = chroma('blue')
+const linkColor = colors.link;
 
 
 function withoutTrailingSlashes(path: string): string {
