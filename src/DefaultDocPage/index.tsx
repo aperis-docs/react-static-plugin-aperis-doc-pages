@@ -1,0 +1,78 @@
+import React from 'react'
+import { Helmet } from 'react-helmet'
+import { useRouteData, useRoutePath } from 'react-static'
+import { Link as RouterLink, useLocation } from '@reach/router'
+
+import { DocPage as DocPageComponent } from '@riboseinc/aperis-doc-pages'
+
+import Asciidoc from './Asciidoc'
+import { Link, normalizeInternalHRef, UnstyledLink } from './linksButtons'
+
+import styled from 'styled-components'
+import { DocsPageRouteData } from '../types'
+
+
+export default () => {
+  const { title, urlPrefix, docPage, docsNav, headerBanner, footerBanner }: DocsPageRouteData = useRouteData()
+
+  const loc = useLocation().pathname
+  const routePath = (useRoutePath as () => string)()
+
+  function pathIsCurrent(path: string, relative?: string | boolean) {
+    return normalizeInternalHRef(loc, path, relative) === `/${routePath}/`
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>{docPage.data?.title} — {title}</title>
+      </Helmet>
+
+      <DocPageComponent
+        AsciidocComponent={Asciidoc}
+        LinkComponent={Link}
+        pathIsCurrent={pathIsCurrent}
+        rootURLPath={urlPrefix}
+        header={<Header to="/"><Symbol alt="EXPRESS" src={`${urlPrefix}/${headerBanner}`} /></Header>}
+        footer={<FooterBanner src={`${urlPrefix}/${footerBanner}`}/>}
+        page={docPage}
+        nav={docsNav}
+      />
+    </>
+  )
+}
+
+
+const FooterBanner: React.FC<{ src: string }> = function ({ src }) {
+  return (
+    <UnstyledLink to="https://open.ribose.com">
+      <FooterSymbol src={src} />
+    </UnstyledLink>
+  )
+}
+
+
+const Header = styled(RouterLink)`
+  height: 3rem;
+
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+
+  @media screen and (min-width: 800px) {
+    justify-content: flex-start;
+  }
+`
+
+
+const Symbol = styled.img`
+  height: 3rem;
+`
+
+
+
+const FooterSymbol = styled.img`
+  height: 16px;
+  padding-left: .5rem;
+`

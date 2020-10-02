@@ -1,11 +1,14 @@
 import { Route } from 'react-static';
-import { DocPage } from '@riboseinc/aperis-doc-pages/types';
+import { DocPage, DocsPageNavItem } from '@riboseinc/aperis-doc-pages/types';
 
 
 export interface PluginConfig {
   sourcePath: string
   urlPrefix: string
-  template: string
+  template?: string
+  headerBanner: string
+  footerBanner: string
+  title: string
 }
 
 
@@ -20,6 +23,16 @@ export interface ReactStaticState {
 
 export interface DocsRoute extends Route {
   _isIndexFile: boolean
+}
+
+
+export interface DocsPageRouteData {
+  urlPrefix: string
+  docPage: DocPage
+  docsNav: DocsPageNavItem[]
+  title: string
+  footerBanner: string
+  headerBanner: string
 }
 
 

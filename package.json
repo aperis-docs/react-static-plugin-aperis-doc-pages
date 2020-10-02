@@ -10,32 +10,51 @@
   "files": [
     "README.adoc",
     "node.api.js",
+    "node.api.js.map",
+    "node.api.d.ts",
     "SimpleCache.js",
+    "SimpleCache.js.map",
+    "SimpleCache.d.ts",
     "pageMedia.js",
-    "AsciidocSectionListConverter.js"
+    "pageMedia.js.map",
+    "pageMedia.d.ts",
+    "AsciidocSectionListConverter.js",
+    "AsciidocSectionListConverter.js.map",
+    "AsciidocSectionListConverter.d.ts",
+    "DefaultDocPage/*.js",
+    "DefaultDocPage/*.css",
+    "DefaultDocPage/*.js.map",
+    "DefaultDocPage/*.d.ts"
   ],
   "scripts": {
-    "build": "rm -r compiled; mkdir compiled; tsc --outDir compiled; babel compiled --out-dir .",
-    "watch": "yarn build --watch"
+    "build": "rm -r compiled dist; mkdir compiled dist; tsc --outDir compiled; babel compiled --out-dir dist; cp package.json dist/; rsync -a --include '*/' --include '*.css' --exclude '*' src/ dist/; rsync -a --include '*/' --include '*.d.ts' --include '*.js.map' --exclude '*' compiled/ dist/"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.4.0",
     "@babel/preset-env": "^7.4.2",
-    "@riboseinc/aperis-doc-pages": "^1.0.0-pre7",
+    "@riboseinc/aperis-doc-pages": "^1.0.0-pre8",
     "@types/js-yaml": "^3.12.5",
     "@types/node": "^14.6.0",
+    "@types/reach__router": "^1.3.6",
     "@types/react": "^16.9.46",
     "@types/react-helmet": "^6.1.0",
+    "@types/styled-components": "^5.1.3",
     "@types/webpack-dev-server": "^3.11.0",
     "react-static": "^7.4.2",
     "typescript": "^4.0.2"
   },
   "dependencies": {
+    "@reach/router": "^1.3.4",
+    "@types/chroma-js": "^2.1.0",
     "asciidoctor": "^2.2.0",
+    "chroma-js": "^2.1.0",
     "directory-tree": "^2.2.4",
     "js-yaml": "^3.14.0",
-    "probe-image-size": "^5.0.0"
+    "probe-image-size": "^5.0.0",
+    "prosemirror-state": "^1.3.3",
+    "react": "^16.13.1",
+    "styled-components": "^5.2.0"
   },
   "peerDependencies": {
     "react-static": "^7"

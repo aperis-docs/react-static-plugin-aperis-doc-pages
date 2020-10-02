@@ -5,13 +5,14 @@ import yaml from 'js-yaml';
 import asciidoctorjs from 'asciidoctor';
 
 import { Route } from 'react-static';
-import { DocPage, DocsPageItem, MediaItem } from '@riboseinc/aperis-doc-pages/types';
+import { DocsPageItem, MediaItem } from '@riboseinc/aperis-doc-pages/types';
 
 import {
   ReactStaticState,
   PluginConfig,
   DocsRoute,
   SourceDocPageData,
+  DocsPageRouteData,
 } from './types';
 
 import SimpleCache from './SimpleCache';
@@ -27,12 +28,14 @@ asciidoctor.ConverterFactory.register(new AsciidocSectionListConverter(), ['sect
 const cache = new SimpleCache();
 
 
-export default ({ sourcePath, urlPrefix, template }: PluginConfig) => ({
+export default ({ sourcePath, urlPrefix, template, title, footerBanner, headerBanner }: PluginConfig) => ({
   getRoutes: async (routes: Route[], _state: ReactStaticState) => {
     const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
-    if (docsDirTree) {
 
+    if (docsDirTree) {
       docsDirTree.name = urlPrefix;
+
+      const effectiveTemplate = template || path.join(__dirname, 'DefaultDocPage/index.js');
 
       const [docsNav, redirectRoutes] = await Promise.all([
         await Promise.all(
@@ -46,7 +49,11 @@ export default ({ sourcePath, urlPrefix, template }: PluginConfig) => ({
       return [
         ...routes,
         ...redirectRoutes.flat(),
-        ...[docsDirTree].map(e => dirEntryToDocsRoute(e, docsNav, template)),
+        ...[docsDirTree].map(entry => dirEntryToDocsRoute(
+            entry,
+            [],
+            effectiveTemplate,
+            { urlPrefix, docsNav, title, headerBanner, footerBanner })),
       ];
 
     } else {
@@ -58,6 +65,9 @@ export default ({ sourcePath, urlPrefix, template }: PluginConfig) => ({
     const docsURLPrefix = `${urlPrefix}/`;
     const docsSrcPrefix = path.basename(sourcePath);
     const docsOutPrefix = `dist/${urlPrefix}`;
+
+    fs.copyFileSync(path.join(sourcePath, headerBanner), path.join(docsOutPrefix, headerBanner));
+    fs.copyFileSync(path.join(sourcePath, footerBanner), path.join(docsOutPrefix, footerBanner));
 
     for (const r of state.routes) {
       if (r.path.indexOf(docsURLPrefix) === 0) {
@@ -82,29 +92,32 @@ export default ({ sourcePath, urlPrefix, template }: PluginConfig) => ({
 
 function dirEntryToDocsRoute(
   entry: DirectoryTree,
-  nav: DocsPageItem[],
+  parents: DirectoryTree[],
   template: string,
-  parents?: DirectoryTree[],
+  context: Omit<DocsPageRouteData, 'docPage'>,
 ): DocsRoute {
   return {
     path: dirEntryNameToRoutePath(entry.name),
-    _isIndexFile: entry.type !== 'file',
     children: entry.type !== 'file'
-      ? (entry.children || []).filter(isValid).map(c =>
-          dirEntryToDocsRoute(c, nav, template, [ ...(parents || []), entry ])
-        )
+      ? (entry.children || []).filter(isValid).map(childEntry =>
+          dirEntryToDocsRoute(
+            childEntry,
+            [ ...(parents || []), entry ],
+            template,
+            context))
       : undefined,
-    template: template,
-    getData: getDocsRouteData(entry, nav, parents || []),
+    template,
+    getData: getDocsRouteData(entry, parents || [], context),
+    _isIndexFile: entry.type !== 'file', // TODO: Is a crutch
   };
 }
 
 
 function getDocsRouteData(
   entry: DirectoryTree,
-  docsNav: DocsPageItem[],
   parentEntries: DirectoryTree[],
-): () => Promise<{ docsNav: DocsPageItem[], docPage: DocPage }> {
+  context: Omit<DocsPageRouteData, 'docPage'>,
+): () => Promise<DocsPageRouteData> {
   return async () => {
     const children = (entry.children || []).filter(isValid);
     const dataPath = getDataFilePathForDirTreeEntry(entry);
@@ -134,7 +147,11 @@ function getDocsRouteData(
     };
 
     return {
-      docsNav,
+      urlPrefix: context.urlPrefix,
+      docsNav: context.docsNav,
+      title: context.title,
+      footerBanner: context.footerBanner,
+      headerBanner: context.headerBanner,
       docPage: {
         id: noExt(entry.name),
         items: entry.type !== 'file'
