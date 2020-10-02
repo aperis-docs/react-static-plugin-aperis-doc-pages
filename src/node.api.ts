@@ -28,7 +28,12 @@ asciidoctor.ConverterFactory.register(new AsciidocSectionListConverter(), ['sect
 const cache = new SimpleCache();
 
 
-export default ({ sourcePath, urlPrefix, template, title, footerBanner, headerBanner }: PluginConfig) => ({
+export default ({
+    sourcePath, urlPrefix, template,
+    title,
+    footerBanner, headerBanner, footerBannerLink,
+}: PluginConfig) => ({
+
   getRoutes: async (routes: Route[], _state: ReactStaticState) => {
     const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
 
@@ -53,7 +58,7 @@ export default ({ sourcePath, urlPrefix, template, title, footerBanner, headerBa
             entry,
             [],
             effectiveTemplate,
-            { urlPrefix, docsNav, title, headerBanner, footerBanner })),
+            { urlPrefix, docsNav, title, headerBanner, footerBanner, footerBannerLink })),
       ];
 
     } else {
@@ -102,12 +107,12 @@ function dirEntryToDocsRoute(
       ? (entry.children || []).filter(isValid).map(childEntry =>
           dirEntryToDocsRoute(
             childEntry,
-            [ ...(parents || []), entry ],
+            [ ...parents, entry ],
             template,
             context))
       : undefined,
     template,
-    getData: getDocsRouteData(entry, parents || [], context),
+    getData: getDocsRouteData(entry, parents, context),
     _isIndexFile: entry.type !== 'file', // TODO: Is a crutch
   };
 }
@@ -147,11 +152,7 @@ function getDocsRouteData(
     };
 
     return {
-      urlPrefix: context.urlPrefix,
-      docsNav: context.docsNav,
-      title: context.title,
-      footerBanner: context.footerBanner,
-      headerBanner: context.headerBanner,
+      ...context,
       docPage: {
         id: noExt(entry.name),
         items: entry.type !== 'file'

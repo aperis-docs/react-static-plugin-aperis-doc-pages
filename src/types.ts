@@ -8,6 +8,7 @@ export interface PluginConfig {
   template?: string
   headerBanner: string
   footerBanner: string
+  footerBannerLink: string
   title: string
 }
 
@@ -33,6 +34,7 @@ export interface DocsPageRouteData {
   title: string
   footerBanner: string
   headerBanner: string
+  footerBannerLink: string
 }
 
 

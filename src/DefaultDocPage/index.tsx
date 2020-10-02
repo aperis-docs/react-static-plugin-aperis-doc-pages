@@ -13,7 +13,7 @@ import { DocsPageRouteData } from '../types'
 
 
 export default () => {
-  const { title, urlPrefix, docPage, docsNav, headerBanner, footerBanner }: DocsPageRouteData = useRouteData()
+  const { title, urlPrefix, docPage, docsNav, headerBanner, footerBanner, footerBannerLink }: DocsPageRouteData = useRouteData()
 
   const loc = useLocation().pathname
   const routePath = (useRoutePath as () => string)()
@@ -21,6 +21,9 @@ export default () => {
   function pathIsCurrent(path: string, relative?: string | boolean) {
     return normalizeInternalHRef(loc, path, relative) === `/${routePath}/`
   }
+
+  const rootURLPath = urlPrefix === '' ? urlPrefix : `/${urlPrefix}/`
+  const bannerSrcPrefix = urlPrefix === '' ? '/' : `/${urlPrefix}/`
 
   return (
     <>
@@ -32,9 +35,9 @@ export default () => {
         AsciidocComponent={Asciidoc}
         LinkComponent={Link}
         pathIsCurrent={pathIsCurrent}
-        rootURLPath={urlPrefix}
-        header={<Header to="/"><Symbol alt="EXPRESS" src={`${urlPrefix}/${headerBanner}`} /></Header>}
-        footer={<FooterBanner src={`${urlPrefix}/${footerBanner}`}/>}
+        rootURLPath={rootURLPath}
+        header={<Header to="/"><Symbol alt={title} src={`${bannerSrcPrefix}${headerBanner}`} /></Header>}
+        footer={<FooterBanner src={`${bannerSrcPrefix}${footerBanner}`} link={footerBannerLink} />}
         page={docPage}
         nav={docsNav}
       />
@@ -43,9 +46,9 @@ export default () => {
 }
 
 
-const FooterBanner: React.FC<{ src: string }> = function ({ src }) {
+const FooterBanner: React.FC<{ src: string, link: string }> = function ({ src, link }) {
   return (
-    <UnstyledLink to="https://open.ribose.com">
+    <UnstyledLink to={link}>
       <FooterSymbol src={src} />
     </UnstyledLink>
   )
