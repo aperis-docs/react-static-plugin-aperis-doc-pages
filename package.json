@@ -1,6 +1,6 @@
 {
   "name": "@riboseinc/react-static-plugin-aperis-doc-pages",
-  "version": "1.0.2-dev1",
+  "version": "1.0.2-alpha1",
   "description": "",
   "main": "node.api.js",
   "repository": "git@github.com:riboseinc/react-static-plugin-aperis-doc-pages.git",
