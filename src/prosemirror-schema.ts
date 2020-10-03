@@ -1,4 +1,4 @@
-import { Schema } from 'prosemirror-model'
+import { MarkSpec, Schema } from 'prosemirror-model'
 import { marks as basicMarks } from 'prosemirror-schema-basic'
 import { nodes as basicNodes } from 'prosemirror-schema-basic'
 import { orderedList, bulletList, listItem } from 'prosemirror-schema-list'
@@ -72,7 +72,7 @@ const underline = {
   }]
 }
 
-const marks = {
+const marks: MarkSpec = {
   ...basicMarks,
   subscript,
   superscript,
@@ -81,5 +81,4 @@ const marks = {
 }
 
 
-// @ts-ignore
 export default new Schema({ nodes, marks })
