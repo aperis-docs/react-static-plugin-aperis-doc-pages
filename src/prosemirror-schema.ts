@@ -9,17 +9,17 @@ const listNodes = {
   ordered_list: {
     ...orderedList,
     content: 'list_item+',
-    group: 'block'
+    group: 'block',
   },
   bullet_list: {
     ...bulletList,
     content: 'list_item+',
-    group: 'block'
+    group: 'block',
   },
   list_item: {
     ...listItem,
-    content: 'paragraph block*'
-  }
+    content: 'paragraph block*',
+  },
 }
 
 const nodes = {
@@ -37,39 +37,39 @@ const subscript = {
   excludes: 'superscript',
   parseDOM: [
     { tag: 'sub' },
-    { style: 'vertical-align=sub' }
+    { style: 'vertical-align=sub' },
   ],
-  toDOM: () => ['sub']
+  toDOM: () => ['sub'],
 }
 
 const superscript = {
   excludes: 'subscript',
   parseDOM: [
     { tag: 'sup' },
-    { style: 'vertical-align=super' }
+    { style: 'vertical-align=super' },
   ],
-  toDOM: () => ['sup']
+  toDOM: () => ['sup'],
 }
 
 const strikethrough = {
   parseDOM: [
     { tag: 'strike' },
     { style: 'text-decoration=line-through' },
-    { style: 'text-decoration-line=line-through' }
+    { style: 'text-decoration-line=line-through' },
   ],
   toDOM: () => ['span', {
-    style: 'text-decoration-line:line-through'
-  }]
+    style: 'text-decoration-line:line-through',
+  }],
 }
 
 const underline = {
   parseDOM: [
     { tag: 'u' },
-    { style: 'text-decoration=underline' }
+    { style: 'text-decoration=underline' },
   ],
   toDOM: () => ['span', {
-    style: 'text-decoration:underline'
-  }]
+    style: 'text-decoration:underline',
+  }],
 }
 
 const marks: MarkSpec = {
@@ -77,8 +77,7 @@ const marks: MarkSpec = {
   subscript,
   superscript,
   strikethrough,
-  underline
+  underline,
 }
-
 
 export default new Schema({ nodes, marks })
