@@ -179,7 +179,11 @@ async function getDocsPageItems(
     path: urlPath,
     importance: data.importance,
     title: data.title || 'NO TITLE',
-    hasContents: (data.contents || '').trim() !== '',
+    hasContents: data.contents !== undefined
+      ? isProseMirrorStructure(data.contents)
+        ? data.contents.doc.content !== undefined
+        : (data.contents || '').trim() !== ''
+      : false,
     items: await Promise.all(children.map(c => getDocsPageItems(c, readContents, urlPath))),
   }
 
