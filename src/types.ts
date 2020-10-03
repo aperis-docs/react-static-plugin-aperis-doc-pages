@@ -38,10 +38,16 @@ export interface DocsPageRouteData {
 }
 
 
-export type DocPageData = DocPage["data"]
+export type SourceDocPageData = {
+  importance?: number
+  title: string
+  summary?: ProseMirrorStructure | string
+  contents?: ProseMirrorStructure | string
+  excerpt?: string
 
-export type SourceDocPageData = DocPageData & {
   media: string[]
   redirectFrom: string[]
-  importance?: number
 }
+
+
+export type ProseMirrorStructure = { doc: Record<string, any> }

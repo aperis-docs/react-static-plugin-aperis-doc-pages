@@ -17,6 +17,7 @@ import {
   DocsRoute,
   SourceDocPageData,
   DocsPageRouteData,
+  ProseMirrorStructure,
 } from './types';
 
 import SimpleCache from './SimpleCache';
