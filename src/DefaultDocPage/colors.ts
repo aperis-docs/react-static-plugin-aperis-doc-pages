@@ -1,7 +1,7 @@
-import chroma from 'chroma-js'
+import chroma from 'chroma-js';
 
 
-const scale = chroma.scale(['#55aadd', 'hotpink']).colors(5, null)
+const scale = chroma.scale(['#55aadd', 'hotpink']).colors(5, null);
 
 
 // TODO: Allow to customize color scale/theme via plugin configuration?
@@ -9,4 +9,4 @@ const scale = chroma.scale(['#55aadd', 'hotpink']).colors(5, null)
 export default {
   scale,
   link: scale[0].darken(1),
-}
+};

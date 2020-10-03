@@ -1,7 +1,7 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
-import asciidocBaseCSS from '!!raw-loader!./asciidoctor.css'
-import colors from './colors'
+import React from 'react';
+import styled, { css } from 'styled-components';
+import asciidocBaseCSS from '!!raw-loader!./asciidoctor.css';
+import colors from './colors';
 
 
 const Asciidoc:
@@ -16,17 +16,17 @@ function ({ content, inline, className, style }) {
     return <AsciidocStyledInline
       style={style}
       className={className}
-      dangerouslySetInnerHTML={{ __html: content }} />
+      dangerouslySetInnerHTML={{ __html: content }} />;
   } else {
     return <AsciidocStyled
       style={style}
       className={className}
-      dangerouslySetInnerHTML={{ __html: content }} />
+      dangerouslySetInnerHTML={{ __html: content }} />;
   }
-}
+};
 
 
-export default Asciidoc
+export default Asciidoc;
 
 
 const asciidocBase = css`
@@ -41,11 +41,11 @@ const asciidocBase = css`
   a, a:link, a:visited {
     color: ${colors.link.css()};
   }
-`
+`;
 
 const AsciidocStyledInline = styled.p`
   ${asciidocBase}
-`
+`;
 
 const AsciidocStyled = styled.div`
   ${asciidocBase}
@@ -144,4 +144,4 @@ const AsciidocStyled = styled.div`
       }
     }
   }
-`
+`;

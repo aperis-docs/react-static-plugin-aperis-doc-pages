@@ -1,38 +1,37 @@
-import React from 'react'
-import { Link as RouterLink, useLocation } from '@reach/router'
-import { useRoutePath } from 'react-static'
-import styled, { css } from 'styled-components'
-import colors from './colors'
+import React from 'react';
+import { Link as RouterLink, useLocation } from '@reach/router';
+import { useRoutePath } from 'react-static';
+import styled, { css } from 'styled-components';
+import colors from './colors';
 
 
-const LINK_BORDER = `1px dotted silver`
-
+const LINK_BORDER = `1px dotted silver`;
 const linkColor = colors.link;
 
 
 function withoutTrailingSlashes(path: string): string {
-  return path.replace(/^\/|\/$/g, '')
+  return path.replace(/^\/|\/$/g, '');
 }
 
 
 export function normalizeInternalHRef(loc: string, to: string, relative?: string | boolean): string {
-  const hasAnchor = to.indexOf('#') >= 0
-  const trailingSlash = hasAnchor ? false : true
+  const hasAnchor = to.indexOf('#') >= 0;
+  const trailingSlash = hasAnchor ? false : true;
 
-  const _relative = relative === undefined ? to.indexOf('/') !== 0 : relative
-  const locWithoutSlashes = withoutTrailingSlashes(loc)
+  const _relative = relative === undefined ? to.indexOf('/') !== 0 : relative;
+  const locWithoutSlashes = withoutTrailingSlashes(loc);
   const prefix = _relative === true
     ? `/${locWithoutSlashes}${locWithoutSlashes !== '' ? '/' : ''}`
-    : (_relative || '/')
+    : (_relative || '/');
 
-  return `${prefix}${withoutTrailingSlashes(to)}${trailingSlash ? '/' : ''}`
+  return `${prefix}${withoutTrailingSlashes(to)}${trailingSlash ? '/' : ''}`;
 }
 
 
 export function useInternalLinkCurrentState(normalizedPath: string): boolean {
-  const routePath = (useRoutePath as () => string)()
+  const routePath = (useRoutePath as () => string)();
 
-  return `/${routePath}/` === normalizedPath
+  return `/${routePath}/` === normalizedPath;
 }
 
 
@@ -47,8 +46,8 @@ export interface LinkProps {
 }
 export const Link: React.FC<LinkProps> =
 function ({ to, relative, unstyled, disabled, title, className, style, children }) {
-  const _to = normalizeInternalHRef(useLocation().pathname, to, relative)
-  const isActive = useInternalLinkCurrentState(_to)
+  const _to = normalizeInternalHRef(useLocation().pathname, to, relative);
+  const isActive = useInternalLinkCurrentState(_to);
 
   if (to?.startsWith('http') || disabled) {
     return (
@@ -59,7 +58,7 @@ function ({ to, relative, unstyled, disabled, title, className, style, children 
           href={disabled ? undefined : to}>
         {children}
       </a>
-    )
+    );
   } else {
     return (
       <InternalLink
@@ -71,7 +70,7 @@ function ({ to, relative, unstyled, disabled, title, className, style, children 
           to={_to}>
         {children}
       </InternalLink>
-    )
+    );
   }
 }
 
@@ -104,7 +103,7 @@ const InternalLink = styled(RouterLink)`
     border-bottom: none;
     text-decoration: none;
   }
-`
+`;
 
 
 export const UnstyledLink = styled(Link)`
@@ -115,13 +114,13 @@ export const UnstyledLink = styled(Link)`
     border-bottom: none;
     text-decoration: underline;
   }
-`
+`;
 
 
 export const disabledButtonStyle = css`
   cursor: not-allowed;
   background: silver;
-`
+`;
 
 export const enabledButtonStyle = css`
   text-shadow: rgba(0, 0, 0, 0.4) .05rem .05rem .1rem;
@@ -136,7 +135,7 @@ export const enabledButtonStyle = css`
       ${linkColor.darken(.5).css()} 0 0 0rem .1rem inset,
       rgba(255, 255, 255, 0) .1rem .4rem 1rem inset;
   }
-`
+`;
 
 export const buttonStyle = css`
   border: none;
@@ -157,7 +156,7 @@ export const buttonStyle = css`
   transition: box-shadow .1s linear, text-shadow .1s linear, background-position .1s linear;
   background-size: 200% 200%;
   background-position: 0% 30%;
-`
+`;
 
 
 export const Button = styled(UnstyledLink)`
@@ -170,4 +169,4 @@ export const Button = styled(UnstyledLink)`
   ${(props: { disabled?: boolean }) => props.disabled
     ? disabledButtonStyle
     : enabledButtonStyle}
-`
+`;

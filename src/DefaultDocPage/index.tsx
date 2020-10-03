@@ -1,29 +1,37 @@
-import React from 'react'
-import { Helmet } from 'react-helmet'
-import { useRouteData, useRoutePath } from 'react-static'
-import { Link as RouterLink, useLocation } from '@reach/router'
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import { useRouteData, useRoutePath } from 'react-static';
+import { Link as RouterLink, useLocation } from '@reach/router';
 
-import { DocPage as DocPageComponent } from '@riboseinc/aperis-doc-pages'
+import { DocPage as DocPageComponent } from '@riboseinc/aperis-doc-pages';
 
-import Asciidoc from './Asciidoc'
-import { Link, normalizeInternalHRef, UnstyledLink } from './linksButtons'
+import Asciidoc from './Asciidoc';
+import { Link, normalizeInternalHRef, UnstyledLink } from './linksButtons';
 
-import styled from 'styled-components'
-import { DocsPageRouteData } from '../types'
+import styled from 'styled-components';
+import { DocsPageRouteData } from '../types';
 
 
 export default () => {
-  const { title, urlPrefix, docPage, docsNav, headerBanner, footerBanner, footerBannerLink }: DocsPageRouteData = useRouteData()
+  const {
+    title,
+    urlPrefix,
+    docPage,
+    docsNav,
+    headerBanner,
+    footerBanner,
+    footerBannerLink,
+  }: DocsPageRouteData = useRouteData();
 
-  const loc = useLocation().pathname
-  const routePath = (useRoutePath as () => string)()
+  const loc = useLocation().pathname;
+  const routePath = (useRoutePath as () => string)();
 
   function pathIsCurrent(path: string, relative?: string | boolean) {
-    return normalizeInternalHRef(loc, path, relative) === `/${routePath}/`
+    return normalizeInternalHRef(loc, path, relative) === `/${routePath}/`;
   }
 
-  const rootURLPath = urlPrefix === '' ? urlPrefix : `/${urlPrefix}/`
-  const bannerSrcPrefix = urlPrefix === '' ? '/' : `/${urlPrefix}/`
+  const rootURLPath = urlPrefix === '' ? urlPrefix : `/${urlPrefix}/`;
+  const bannerSrcPrefix = urlPrefix === '' ? '/' : `/${urlPrefix}/`;
 
   return (
     <>
@@ -42,8 +50,8 @@ export default () => {
         nav={docsNav}
       />
     </>
-  )
-}
+  );
+};
 
 
 const FooterBanner: React.FC<{ src: string, link: string }> = function ({ src, link }) {
@@ -51,8 +59,8 @@ const FooterBanner: React.FC<{ src: string, link: string }> = function ({ src, l
     <UnstyledLink to={link}>
       <FooterSymbol src={src} />
     </UnstyledLink>
-  )
-}
+  );
+};
 
 
 const Header = styled(RouterLink)`
@@ -66,16 +74,15 @@ const Header = styled(RouterLink)`
   @media screen and (min-width: 800px) {
     justify-content: flex-start;
   }
-`
+`;
 
 
 const Symbol = styled.img`
   height: 3rem;
-`
-
+`;
 
 
 const FooterSymbol = styled.img`
   height: 16px;
   padding-left: .5rem;
-`
+`;

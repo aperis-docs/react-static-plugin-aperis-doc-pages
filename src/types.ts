@@ -50,4 +50,4 @@ export type SourceDocPageData = {
 }
 
 
-export type ProseMirrorStructure = { doc: Record<string, any> }
+export type ProseMirrorStructure = { doc: Record<string, any> };

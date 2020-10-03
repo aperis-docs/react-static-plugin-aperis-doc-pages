@@ -5,7 +5,7 @@ import yaml from 'js-yaml';
 
 import asciidoctorjs from 'asciidoctor';
 import { Node, DOMSerializer } from 'prosemirror-model';
-import { default as proseMirrorSchema } from './prosemirror-schema'
+import { default as proseMirrorSchema } from './prosemirror-schema';
 import jsdom from 'jsdom';
 
 import { Route } from 'react-static';
@@ -186,7 +186,7 @@ async function getDocsPageItems(
         : (data.contents || '').trim() !== ''
       : false,
     items: await Promise.all(children.map(c => getDocsPageItems(c, readContents, urlPath))),
-  }
+  };
 
   if (readContents !== true) {
     return itemData;
@@ -257,7 +257,6 @@ const asciidoctor = asciidoctorjs();
 asciidoctor.ConverterFactory.register(new AsciidocSectionListConverter(), ['sectionJSON']);
 
 
-type ProseMirrorStructure = { doc: Record<string, any> }
 interface RichContentConversionOptions {
   headingLevelOffset?: number
   inline?: boolean
@@ -274,36 +273,36 @@ function convertRichContentToHTML(
     opts?: RichContentConversionOptions,
 ): string {
   if (isProseMirrorStructure(data)) {
-    const dom = new jsdom.JSDOM('<!DOCTYPE html><div id="content"></div>')
-    const targetDoc = dom.window.document
-    const targetElement = targetDoc.querySelector('div')
-    const node = Node.fromJSON(proseMirrorSchema, data.doc)
+    const dom = new jsdom.JSDOM('<!DOCTYPE html><div id="content"></div>');
+    const targetDoc = dom.window.document;
+    const targetElement = targetDoc.querySelector('div');
+    const node = Node.fromJSON(proseMirrorSchema, data.doc);
     DOMSerializer.
       fromSchema(proseMirrorSchema).
       // @ts-ignore: 2554 (serializeFragment supports third argument, but is not properly typed)
-      serializeFragment(node, { document: targetDoc }, targetElement)
-    const html = targetDoc.querySelector('div')?.innerHTML
+      serializeFragment(node, { document: targetDoc }, targetElement);
+    const html = targetDoc.querySelector('div')?.innerHTML;
     if (html !== undefined) {
-      return html
+      return html;
     } else {
-      console.error("Unable to render ProseMirror contents", data)
-      throw new Error("Unable to render ProseMirror contents")
+      console.error("Unable to render ProseMirror contents", data);
+      throw new Error("Unable to render ProseMirror contents");
     }
 
   } else {
-    let adocContents: string
-    let doctorOptions: Record<string, any> | undefined
+    let adocContents: string;
+    let doctorOptions: Record<string, any> | undefined;
     if (opts?.headingLevelOffset !== undefined) {
       adocContents = `
         :leveloffset: ${opts.headingLevelOffset}\n\n${data || ''}
-      `
+      `;
     } else {
-      adocContents = data
+      adocContents = data;
     }
     if (opts?.inline) {
-      doctorOptions = { doctype: 'inline' }
+      doctorOptions = { doctype: 'inline' };
     } else {
-      doctorOptions = undefined
+      doctorOptions = undefined;
     }
     return asciidoctor.convert(adocContents, doctorOptions) as string;
   }

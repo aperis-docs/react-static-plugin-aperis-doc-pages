@@ -1,8 +1,8 @@
-import { MarkSpec, Schema } from 'prosemirror-model'
-import { marks as basicMarks } from 'prosemirror-schema-basic'
-import { nodes as basicNodes } from 'prosemirror-schema-basic'
-import { orderedList, bulletList, listItem } from 'prosemirror-schema-list'
-import { tableNodes } from 'prosemirror-tables'
+import { MarkSpec, Schema } from 'prosemirror-model';
+import { marks as basicMarks } from 'prosemirror-schema-basic';
+import { nodes as basicNodes } from 'prosemirror-schema-basic';
+import { orderedList, bulletList, listItem } from 'prosemirror-schema-list';
+import { tableNodes } from 'prosemirror-tables';
 
 
 const listNodes = {
@@ -20,7 +20,7 @@ const listNodes = {
     ...listItem,
     content: 'paragraph block*',
   },
-}
+};
 
 const nodes = {
   ...basicNodes,
@@ -30,7 +30,7 @@ const nodes = {
     cellContent: 'block+',
     cellAttributes: {},
   }),
-}
+};
 
 
 const subscript = {
@@ -40,7 +40,7 @@ const subscript = {
     { style: 'vertical-align=sub' },
   ],
   toDOM: () => ['sub'],
-}
+};
 
 const superscript = {
   excludes: 'subscript',
@@ -49,7 +49,7 @@ const superscript = {
     { style: 'vertical-align=super' },
   ],
   toDOM: () => ['sup'],
-}
+};
 
 const strikethrough = {
   parseDOM: [
@@ -60,7 +60,7 @@ const strikethrough = {
   toDOM: () => ['span', {
     style: 'text-decoration-line:line-through',
   }],
-}
+};
 
 const underline = {
   parseDOM: [
@@ -70,7 +70,7 @@ const underline = {
   toDOM: () => ['span', {
     style: 'text-decoration:underline',
   }],
-}
+};
 
 const marks: MarkSpec = {
   ...basicMarks,
@@ -78,6 +78,6 @@ const marks: MarkSpec = {
   superscript,
   strikethrough,
   underline,
-}
+};
 
-export default new Schema({ nodes, marks })
+export default new Schema({ nodes, marks });
