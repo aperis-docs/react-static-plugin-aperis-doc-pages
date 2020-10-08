@@ -4,10 +4,11 @@ import dirTree, { DirectoryTree } from 'directory-tree';
 import yaml from 'js-yaml';
 
 import asciidoctorjs from 'asciidoctor';
-import { Node, DOMSerializer } from 'prosemirror-model';
+import { Node, DOMSerializer, Schema } from 'prosemirror-model';
 
 import {
-  default as proseMirrorSchema,
+  contentsSchema,
+  summarySchema,
 } from '@riboseinc/paneron-extension-aperis-site/prosemirror/schema';
 
 import {
@@ -152,9 +153,14 @@ function getDocsRouteData(
     const data = {
       ..._data,
       breadcrumbs,
-      contents: convertRichContentToHTML(_data.contents || ''),
+      contents: convertRichContentToHTML(
+        _data.contents || '',
+        contentsSchema),
       sections: getSectionList(_data.contents || ''),
-      summary: convertRichContentToHTML(_data.summary || '', { inline: true }),
+      summary: convertRichContentToHTML(
+        _data.summary || '',
+        summarySchema,
+        { inline: true }),
       media,
     };
 
@@ -200,7 +206,10 @@ async function getDocsPageItems(
     return itemData;
   } else {
     const media = await getMedia(dataPath);
-    const summary: string = convertRichContentToHTML(data.summary || '', { inline: true });
+    const summary: string = convertRichContentToHTML(
+      data.summary || '',
+      summarySchema,
+      { inline: true });
 
     return {
       ...itemData,
@@ -273,15 +282,16 @@ interface RichContentConversionOptions {
 
 function convertRichContentToHTML(
     data: string | ProseMirrorStructure,
+    schema: Schema<any, any>,
     opts?: RichContentConversionOptions,
 ): string {
   if (isProseMirrorStructure(data)) {
     const dom = new jsdom.JSDOM('<!DOCTYPE html><div id="content"></div>');
     const targetDoc = dom.window.document;
     const targetElement = targetDoc.querySelector('div');
-    const node = Node.fromJSON(proseMirrorSchema, data.doc);
+    const node = Node.fromJSON(schema, data.doc);
     DOMSerializer.
-      fromSchema(proseMirrorSchema).
+      fromSchema(schema).
       // @ts-ignore: 2554 (serializeFragment supports third argument, but is not properly typed)
       serializeFragment(node, { document: targetDoc }, targetElement);
     const html = targetDoc.querySelector('div')?.innerHTML;
