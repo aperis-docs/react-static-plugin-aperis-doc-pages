@@ -5,7 +5,17 @@ import yaml from 'js-yaml';
 
 import asciidoctorjs from 'asciidoctor';
 import { Node, DOMSerializer } from 'prosemirror-model';
-import { default as proseMirrorSchema } from './prosemirror-schema';
+
+import {
+  default as proseMirrorSchema,
+} from '@riboseinc/paneron-extension-aperis-site/prosemirror/schema';
+
+import {
+  SourceDocPageData,
+  ProseMirrorStructure,
+  isProseMirrorStructure,
+} from '@riboseinc/paneron-extension-aperis-site/types';
+
 import jsdom from 'jsdom';
 
 import { Route } from 'react-static';
@@ -15,9 +25,7 @@ import {
   ReactStaticState,
   PluginConfig,
   DocsRoute,
-  SourceDocPageData,
   DocsPageRouteData,
-  ProseMirrorStructure,
 } from './types';
 
 import SimpleCache from './SimpleCache';
@@ -260,11 +268,6 @@ asciidoctor.ConverterFactory.register(new AsciidocSectionListConverter(), ['sect
 interface RichContentConversionOptions {
   headingLevelOffset?: number
   inline?: boolean
-}
-
-
-function isProseMirrorStructure(data: string | ProseMirrorStructure): data is ProseMirrorStructure {
-  return data.hasOwnProperty('doc');
 }
 
 

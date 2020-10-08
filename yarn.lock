@@ -1100,6 +1100,11 @@
   resolved "https://registry.yarnpkg.com/@riboseinc/aperis-doc-pages/-/aperis-doc-pages-1.0.0-pre8.tgz#e3b4e3e4bc2a2da79da56444fae30cde0d101488"
   integrity sha512-6tP329z9/f6PM0e0OYKeD3Yg3/f8QQOKhvxWI8o65TRveGwZPgEZfZyUyvWGDI5TxySrVh7HVzX57h/poivGfQ==
 
+"@riboseinc/paneron-extension-aperis-site@^1.0.0-alpha3":
+  version "1.0.0-alpha3"
+  resolved "https://registry.yarnpkg.com/@riboseinc/paneron-extension-aperis-site/-/paneron-extension-aperis-site-1.0.0-alpha3.tgz#b27f19f73012ae957c0e7bd5094e06ec743d206f"
+  integrity sha512-dhLYMw6zBRM8V68ipig52hl7/+dX+I7/OYhoSQe/IL7bADtWbHExr61tuNyaDvHAfI6CBCsWr5aFi0vSQVEvEA==
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
