@@ -81,8 +81,8 @@ export default ({
     const docsSrcPrefix = path.basename(sourcePath);
     const docsOutPrefix = `dist/${urlPrefix}`;
 
-    fs.copyFileSync(path.join(sourcePath, headerBanner), path.join(docsOutPrefix, headerBanner));
-    fs.copyFileSync(path.join(sourcePath, footerBanner), path.join(docsOutPrefix, footerBanner));
+    fs.copyFileSync(path.join(headerBanner), path.join(docsOutPrefix, headerBanner));
+    fs.copyFileSync(path.join(footerBanner), path.join(docsOutPrefix, footerBanner));
 
     for (const r of state.routes) {
       if (r.path.indexOf(docsURLPrefix) === 0) {
