@@ -1,6 +1,6 @@
 {
   "name": "@riboseinc/react-static-plugin-aperis-doc-pages",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "",
   "main": "node.api.js",
   "repository": "git@github.com:riboseinc/react-static-plugin-aperis-doc-pages.git",
@@ -42,8 +42,8 @@
   },
   "dependencies": {
     "@reach/router": "^1.3.4",
-    "@riboseinc/paneron-extension-aperis-site": "^1.0.0-alpha3",
-    "@riboseinc/reprose": "^1.0.0-alpha5",
+    "@riboseinc/paneron-extension-aperis-site": "^1.0.0-alpha5",
+    "@riboseinc/reprose": "^1.0.0-alpha6",
     "@types/chroma-js": "^2.1.0",
     "asciidoctor": "^2.2.0",
     "chroma-js": "^2.1.0",
