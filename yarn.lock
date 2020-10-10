@@ -885,6 +885,14 @@
     "@babel/helper-create-regexp-features-plugin" "^7.10.4"
     "@babel/helper-plugin-utils" "^7.10.4"
 
+"@babel/polyfill@^7.11.5":
+  version "7.11.5"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.11.5.tgz#df550b2ec53abbc2ed599367ec59e64c7a707bb5"
+  integrity sha512-FunXnE0Sgpd61pKSj2OSOs1D44rKTD3pGOfGilZ6LGrrIH0QEtJlTjqOqdF8Bs98JmjfGhni2BBkTfv9KcKJ9g==
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.4"
+
 "@babel/preset-env@^7.4.2", "@babel/preset-env@^7.5.5":
   version "7.11.0"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.11.0.tgz#860ee38f2ce17ad60480c2021ba9689393efb796"
@@ -1105,11 +1113,12 @@
   resolved "https://registry.yarnpkg.com/@riboseinc/paneron-extension-aperis-site/-/paneron-extension-aperis-site-1.0.0-alpha3.tgz#b27f19f73012ae957c0e7bd5094e06ec743d206f"
   integrity sha512-dhLYMw6zBRM8V68ipig52hl7/+dX+I7/OYhoSQe/IL7bADtWbHExr61tuNyaDvHAfI6CBCsWr5aFi0vSQVEvEA==
 
-"@riboseinc/reprose@^1.0.0-alpha2":
-  version "1.0.0-alpha2"
-  resolved "https://registry.yarnpkg.com/@riboseinc/reprose/-/reprose-1.0.0-alpha2.tgz#84301cfa10bd217a17c8ee47f34f0c9677f52a03"
-  integrity sha512-PdqeErn7k4vSIT57NdNFAzIR/q1cpOefCnpUuOB2sveop1ztAT7UNWyQmxeT5GXpFS5anR9Qiy9LXx9/HREyDA==
+"@riboseinc/reprose@^1.0.0-alpha5":
+  version "1.0.0-alpha5"
+  resolved "https://registry.yarnpkg.com/@riboseinc/reprose/-/reprose-1.0.0-alpha5.tgz#7b41bcc0be5214f45ed0813f5be7b41af2ca5122"
+  integrity sha512-/S+DzZMMx8NAHvIihPGwyc/8Q4gGec8dOMtbvFFKnoMmBlDv1Oban0cgcN7B5mFS1M8K6eajWlDMnz4eYVDpCA==
   dependencies:
+    "@babel/polyfill" "^7.11.5"
     prosemirror-commands "^1.1.4"
     prosemirror-inputrules "^1.1.3"
     prosemirror-keymap "^1.1.4"
@@ -1119,6 +1128,7 @@
     prosemirror-state "^1.3.3"
     prosemirror-tables "^1.1.1"
     react "^16.13.1"
+    react-dom "^16.13.1"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
@@ -2937,7 +2947,7 @@ core-js-compat@^3.6.2:
     browserslist "^4.8.5"
     semver "7.0.0"
 
-core-js@^2.4.0:
+core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
   integrity sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==
@@ -7321,7 +7331,7 @@ rc@^1.0.1, rc@^1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-dom@^16.9.0:
+react-dom@^16.13.1, react-dom@^16.9.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.13.1.tgz#c1bd37331a0486c078ee54c4740720993b2e0e7f"
   integrity sha512-81PIMmVLnCNLO/fFOQxdQkvEq/+Hfpv24XNJfpyZhTRfO0QcmQIF/PgCa1zCOj2w1hrn12MFLyaJ/G0+Mxtfag==
