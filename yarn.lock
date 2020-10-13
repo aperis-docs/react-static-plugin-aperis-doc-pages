@@ -1113,10 +1113,10 @@
   resolved "https://registry.yarnpkg.com/@riboseinc/paneron-extension-aperis-site/-/paneron-extension-aperis-site-1.0.0-alpha5.tgz#8d0a7d172dce6c4b8cc278d4ff130038541fbf24"
   integrity sha512-GIlUToHn3EA4ZS03+9XCGuSvkqIqzEXsxoOS5C+u5aDu6xpGHNiWKQBrASR53Ed95v3zh8QwMXuQrADW+9EtqQ==
 
-"@riboseinc/reprose@^1.0.0-alpha7":
-  version "1.0.0-alpha7"
-  resolved "https://registry.yarnpkg.com/@riboseinc/reprose/-/reprose-1.0.0-alpha7.tgz#28cf757c58ef6692c92e3918dc81bfa4b864c4be"
-  integrity sha512-E0DmuTyXfciw+4+FOs2haWmg8SuZUiHpKIYqny5/E7XdOfm2arItBCjmOI4KSFbPUHBtIZQejTrBFM8gsmcRTQ==
+"@riboseinc/reprose@^1.0.0-alpha8":
+  version "1.0.0-alpha8"
+  resolved "https://registry.yarnpkg.com/@riboseinc/reprose/-/reprose-1.0.0-alpha8.tgz#811fd7505569b2bc425a175a9774a392cd3def9c"
+  integrity sha512-HxMC2xEeRBxttrG8K+yKHj6i+SdDoPA6dTPqhBmLPFJ2c9tsOAHYtuV/dZVADZsOgbjTjuCEEby+peJ8qB1R/g==
   dependencies:
     "@babel/polyfill" "^7.11.5"
     prosemirror-commands "^1.1.4"
