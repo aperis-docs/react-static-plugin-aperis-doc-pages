@@ -156,7 +156,9 @@ function getDocsRouteData(
       contents: convertRichContentToHTML(
         _data.contents || '',
         contentsSchema),
-      sections: getSectionList(_data.contents || ''),
+      sections: getSectionList(
+        _data.contents || '',
+        contentsSchema),
       summary: convertRichContentToHTML(
         _data.summary || '',
         summarySchema,
@@ -322,16 +324,29 @@ function convertRichContentToHTML(
 }
 
 
-function getSectionList(
+function getSectionList<S extends Schema<any, any>>(
     data: string | ProseMirrorStructure,
+    schema: S,
 ): { id: string, title: string }[] {
+
   if (isProseMirrorStructure(data)) {
-    return []; // TODO: Get proper section list from ProseMirror structure
+    const node: Node<S> = Node.fromJSON<S>(schema, data.doc);
+    let sections: { id: string, title: string }[] = [];
+    node.descendants((node) => {
+      if (node.type.name === 'section' && node.firstChild) {
+        sections.push({ id: node.attrs.id, title: node.firstChild?.textContent });
+      }
+      // Get only top-level subsections—don’t traverse node children:
+      return false;
+    });
+    return sections;
+
   } else {
     return JSON.parse(
       (asciidoctor.convert(data, { backend: 'sectionJSON' }) as string)
       || '[]');
   }
+
 }
 
 
