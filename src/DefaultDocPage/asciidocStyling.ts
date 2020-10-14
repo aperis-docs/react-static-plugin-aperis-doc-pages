@@ -1,35 +1,9 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
+import { css } from 'styled-components';
 import asciidocBaseCSS from '!!raw-loader!./asciidoctor.css';
 import colors from './colors';
 
 
-const Asciidoc:
-React.FC<{
-  content: string
-  inline?: boolean
-  className?: string
-  style?: React.CSSProperties
-}> =
-function ({ content, inline, className, style }) {
-  if (inline) {
-    return <AsciidocStyledInline
-      style={style}
-      className={className}
-      dangerouslySetInnerHTML={{ __html: content }} />;
-  } else {
-    return <AsciidocStyled
-      style={style}
-      className={className}
-      dangerouslySetInnerHTML={{ __html: content }} />;
-  }
-};
-
-
-export default Asciidoc;
-
-
-const asciidocBase = css`
+export const asciidocBaseStyling = css`
   ${asciidocBaseCSS}
 
   &, p {
@@ -43,12 +17,9 @@ const asciidocBase = css`
   }
 `;
 
-const AsciidocStyledInline = styled.p`
-  ${asciidocBase}
-`;
 
-const AsciidocStyled = styled.div`
-  ${asciidocBase}
+export const asciidocWithBlocks = css`
+  ${asciidocBaseStyling}
 
   .admonitionblock {
     .content {

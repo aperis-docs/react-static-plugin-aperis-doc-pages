@@ -5,7 +5,7 @@ import { Link as RouterLink, useLocation } from '@reach/router';
 
 import { DocPage as DocPageComponent } from '@riboseinc/aperis-doc-pages';
 
-import Asciidoc from './Asciidoc';
+import RichContents from './RichContents';
 import { Link, normalizeInternalHRef, UnstyledLink } from './linksButtons';
 
 import styled from 'styled-components';
@@ -40,7 +40,7 @@ export default () => {
       </Helmet>
 
       <DocPageComponent
-        AsciidocComponent={Asciidoc}
+        RichContentContainerComponent={RichContents}
         LinkComponent={Link}
         pathIsCurrent={pathIsCurrent}
         rootURLPath={rootURLPath}
