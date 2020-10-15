@@ -37,10 +37,6 @@ const StyledRichContentsInline = styled.p`
 const StyledRichContents = styled.div`
   ${asciidocWithBlocks}
 
-  a[data-link-schema-id] {
-    margin: 0 .5rem;
-  }
-
   section {
     > header {
       color: #ba3925;
