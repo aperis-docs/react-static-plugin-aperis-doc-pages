@@ -42,67 +42,72 @@ export default ({
     sourcePath, urlPrefix, template,
     title,
     footerBanner, headerBanner, footerBannerLink,
-}: PluginConfig) => ({
+}: PluginConfig) => {
 
-  getRoutes: async (routes: Route[], _state: ReactStaticState) => {
-    const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
+  return {
 
-    if (docsDirTree) {
-      docsDirTree.name = urlPrefix;
+    getRoutes: async (routes: Route[], _state: ReactStaticState) => {
+      const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
 
-      const effectiveTemplate = template || path.join(__dirname, 'DefaultDocPage/index.js');
+      if (docsDirTree) {
+        docsDirTree.name = urlPrefix;
 
-      const [docsNav, redirectRoutes] = await Promise.all([
-        await Promise.all(
-          (docsDirTree.children || []).filter(isValid).map(c => getDocsPageItems(c))
-        ),
-        await Promise.all(
-          (docsDirTree.children || []).map(c => getRedirects(urlPrefix, c, urlPrefix))
-        ),
-      ]);
+        const effectiveTemplate = template || path.join(__dirname, 'DefaultDocPage/index.js');
 
-      return [
-        ...routes,
-        ...redirectRoutes.flat(),
-        ...[docsDirTree].map(entry => dirEntryToDocsRoute(
-            entry,
-            [],
-            effectiveTemplate,
-            { urlPrefix, docsNav, title, headerBanner, footerBanner, footerBannerLink })),
-      ];
+        const [docsNav, redirectRoutes] = await Promise.all([
+          await Promise.all(
+            (docsDirTree.children || []).filter(isValid).map(c => getDocsPageItems(c))
+          ),
+          await Promise.all(
+            (docsDirTree.children || []).map(c => getRedirects(urlPrefix, c, urlPrefix))
+          ),
+        ]);
 
-    } else {
-      return routes;
-    }
-  },
+        return [
+          ...routes,
+          ...redirectRoutes.flat(),
+          ...[docsDirTree].map(entry => dirEntryToDocsRoute(
+              entry,
+              [],
+              effectiveTemplate,
+              { urlPrefix, docsNav, title, headerBanner, footerBanner, footerBannerLink })),
+        ];
 
-  afterExport: async (state: ReactStaticState) => {
-    const docsURLPrefix = `${urlPrefix}/`;
-    const docsSrcPrefix = path.basename(sourcePath);
-    const docsOutPrefix = `dist/${urlPrefix}`;
+      } else {
+        return routes;
+      }
+    },
 
-    fs.copyFileSync(path.join(headerBanner), path.join(docsOutPrefix, headerBanner));
-    fs.copyFileSync(path.join(footerBanner), path.join(docsOutPrefix, footerBanner));
+    afterExport: async (state: ReactStaticState) => {
+      const docsURLPrefix = `${urlPrefix}/`;
+      const docsSrcPrefix = path.basename(sourcePath);
+      const docsOutPrefix = `dist/${urlPrefix}`;
 
-    for (const r of state.routes) {
-      if (r.path.indexOf(docsURLPrefix) === 0) {
-        const id = r.path.replace(docsURLPrefix, '');
-        const _data = r.data?.docPage?.data;
-        if (!_data) {
-        } else {
-          const media = (_data.media || []);
-          for (const f of media) {
-            fs.copyFileSync(
-              `${docsSrcPrefix}/${r._isIndexFile ? id : path.dirname(id)}/${f.filename}`,
-              `${docsOutPrefix}/${id}/${f.filename}`);
+      fs.copyFileSync(path.join(headerBanner), path.join(docsOutPrefix, headerBanner));
+      fs.copyFileSync(path.join(footerBanner), path.join(docsOutPrefix, footerBanner));
+
+      for (const r of state.routes) {
+        if (docsURLPrefix === '/' || r.path.indexOf(docsURLPrefix) === 0) {
+          const id = r.path.replace(docsURLPrefix, '');
+          const _data = r.data?.docPage?.data;
+          if (!_data) {
+          } else {
+            const media = (_data.media || []);
+            for (const f of media) {
+              fs.copyFileSync(
+                `${docsSrcPrefix}/${r._isIndexFile ? id : path.dirname(id)}/${f.filename}`,
+                `${docsOutPrefix}/${id}/${f.filename}`);
+            }
           }
         }
       }
-    }
 
-    return state;
-  },
-});
+      return state;
+    },
+
+  };
+
+};
 
 
 function dirEntryToDocsRoute(
