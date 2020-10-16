@@ -59,7 +59,7 @@ export default ({
             (docsDirTree.children || []).filter(isValid).map(c => getDocsPageItems(c))
           ),
           await Promise.all(
-            (docsDirTree.children || []).map(c => getRedirects(urlPrefix, c, urlPrefix))
+            (docsDirTree.children || []).filter(isValid).map(c => getRedirects(urlPrefix, c, urlPrefix))
           ),
         ]);
 
