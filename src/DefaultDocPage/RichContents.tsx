@@ -38,6 +38,7 @@ const StyledRichContents = styled.div`
   ${asciidocWithBlocks}
 
   figure {
+    margin: 1em 0;
     padding: 1rem;
     background: whiteSmoke;
 
