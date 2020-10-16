@@ -1109,9 +1109,9 @@
   integrity sha512-DyhFVECUJd+xgchLCNvKsFj2vPf8FdGAhaZn12yTn9Amn59NM5xhPD7qtdY94sxH/wM9smAgt0gRlD3FcfEm0A==
 
 "@riboseinc/paneron-extension-aperis-site@^1.0.0-alpha10":
-  version "1.0.0-alpha9"
-  resolved "https://registry.yarnpkg.com/@riboseinc/paneron-extension-aperis-site/-/paneron-extension-aperis-site-1.0.0-alpha9.tgz#aa1342ba0a39653d96aaeeadc6c456d3397962bf"
-  integrity sha512-+e2HQe8ITC7Si4cuUz9sQYDK2ak4a3wXhr7WoI+3n0VkeyWOudalnwHhAJIwy9M11NX+ViiFo8wpGSqj/4c2Xw==
+  version "1.0.0-alpha10"
+  resolved "https://registry.yarnpkg.com/@riboseinc/paneron-extension-aperis-site/-/paneron-extension-aperis-site-1.0.0-alpha10.tgz#19e7981442ba621f55896b29c0c601d24d9e5a47"
+  integrity sha512-b0EzDpSsblEu8CESy9owGWs63t5OoH73f3ADcuma4So0oMiYKnC+MMu/CNRNjYws8jmdSRtqZ/6jsLysntboQQ==
 
 "@riboseinc/reprose@^1.0.0-alpha9":
   version "1.0.0-alpha9"
