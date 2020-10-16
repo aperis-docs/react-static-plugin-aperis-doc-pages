@@ -7,7 +7,7 @@ import asciidoctorjs from 'asciidoctor';
 import { Node, DOMSerializer, Schema } from 'prosemirror-model';
 
 import {
-  contentsSchema,
+  getContentsSchema,
   summarySchema,
 } from '@riboseinc/paneron-extension-aperis-site/prosemirror/schema';
 
@@ -133,6 +133,12 @@ function getDocsRouteData(
   parentEntries: DirectoryTree[],
   context: Omit<DocsPageRouteData, 'docPage'>,
 ): () => Promise<DocsPageRouteData> {
+
+  const contentsSchema = getContentsSchema({
+    protocol: '',
+    imageDir: './',
+  });
+
   return async () => {
     const children = (entry.children || []).filter(isValid);
     const dataPath = getDataFilePathForDirTreeEntry(entry);
