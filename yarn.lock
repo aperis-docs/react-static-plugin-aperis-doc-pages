@@ -1108,15 +1108,15 @@
   resolved "https://registry.yarnpkg.com/@riboseinc/aperis-doc-pages/-/aperis-doc-pages-1.0.0-pre9.tgz#32e7d551c66a57d48e6ba804c4e38c8a33590991"
   integrity sha512-DyhFVECUJd+xgchLCNvKsFj2vPf8FdGAhaZn12yTn9Amn59NM5xhPD7qtdY94sxH/wM9smAgt0gRlD3FcfEm0A==
 
-"@riboseinc/reprose@^1.0.0-alpha8":
-  version "1.0.0-alpha8"
-  resolved "https://registry.yarnpkg.com/@riboseinc/reprose/-/reprose-1.0.0-alpha8.tgz#811fd7505569b2bc425a175a9774a392cd3def9c"
-  integrity sha512-HxMC2xEeRBxttrG8K+yKHj6i+SdDoPA6dTPqhBmLPFJ2c9tsOAHYtuV/dZVADZsOgbjTjuCEEby+peJ8qB1R/g==
 "@riboseinc/paneron-extension-aperis-site@^1.0.0-alpha10":
   version "1.0.0-alpha9"
   resolved "https://registry.yarnpkg.com/@riboseinc/paneron-extension-aperis-site/-/paneron-extension-aperis-site-1.0.0-alpha9.tgz#aa1342ba0a39653d96aaeeadc6c456d3397962bf"
   integrity sha512-+e2HQe8ITC7Si4cuUz9sQYDK2ak4a3wXhr7WoI+3n0VkeyWOudalnwHhAJIwy9M11NX+ViiFo8wpGSqj/4c2Xw==
 
+"@riboseinc/reprose@^1.0.0-alpha9":
+  version "1.0.0-alpha9"
+  resolved "https://registry.yarnpkg.com/@riboseinc/reprose/-/reprose-1.0.0-alpha9.tgz#03e8bef34ea11af3b7122b871c00ca136ca5fcab"
+  integrity sha512-1nHjeomOf7QOxzSlivvP/y8waeIIeUTmGRBtrKs1EuEgatUme53QtQXZltADyyaKEMIdbSEpVGvrpGLHyjtZ0Q==
   dependencies:
     "@babel/polyfill" "^7.11.5"
     prosemirror-commands "^1.1.4"
