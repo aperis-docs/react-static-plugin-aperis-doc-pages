@@ -37,6 +37,17 @@ const StyledRichContentsInline = styled.p`
 const StyledRichContents = styled.div`
   ${asciidocWithBlocks}
 
+  figure {
+    padding: 1rem;
+    background: whiteSmoke;
+
+    figcaption {
+      margin-top: .5em;
+      font-weight: bold;
+      font-size: 85%;
+    }
+  }
+
   section {
     > header {
       color: #ba3925;
