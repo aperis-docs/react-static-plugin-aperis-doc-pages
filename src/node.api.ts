@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { execSync as shell } from 'child_process';
 import path from 'path';
 import dirTree, { DirectoryTree } from 'directory-tree';
 import yaml from 'js-yaml';
@@ -52,7 +53,17 @@ export default ({
       if (docsDirTree) {
         docsDirTree.name = urlPrefix;
 
-        const effectiveTemplate = template || path.join(__dirname, 'DefaultDocPage/index.js');
+
+        let effectiveTemplate: string;
+        if (!template) {
+          const _defaultTemplateSrc = path.join(__dirname, 'DefaultDocPage');
+          const _defaultTemplate = path.join(process.cwd(), '_DocPage');
+          shell(`mkdir -p ${_defaultTemplate}`);
+          shell(`cp -r ${_defaultTemplateSrc}/* ${_defaultTemplate}`)
+          effectiveTemplate = '_DocPage/index';
+        } else {
+          effectiveTemplate = template;
+        }
 
         const [docsNav, redirectRoutes] = await Promise.all([
           await Promise.all(
