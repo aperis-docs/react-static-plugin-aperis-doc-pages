@@ -98,16 +98,19 @@ export default ({
       fs.copyFileSync(path.join(footerBanner), path.join(docsOutPrefix, footerBanner));
 
       for (const r of state.routes) {
-        if (docsURLPrefix === '/' || r.path.indexOf(docsURLPrefix) === 0) {
+        if (docsURLPrefix === '/' || r.path === urlPrefix || r.path.indexOf(docsURLPrefix) === 0) {
           const id = r.path.replace(docsURLPrefix, '');
           const _data = r.data?.docPage?.data;
           if (!_data) {
           } else {
             const media = (_data.media || []);
             for (const f of media) {
-              fs.copyFileSync(
-                `${docsSrcPrefix}/${r._isIndexFile ? id : path.dirname(id)}/${f.filename}`,
-                `${docsOutPrefix}/${id}/${f.filename}`);
+              const pageSourcePath = (r._isIndexFile && r.path !== urlPrefix) ? id : path.dirname(id);
+              const pageTargetPath = (r.path !== urlPrefix) ? id : path.dirname(id);
+              const mediaSource = `${docsSrcPrefix}/${pageSourcePath}/${f.filename}`;
+              const mediaTarget = `${docsOutPrefix}/${pageTargetPath}/${f.filename}`;
+              console.debug("Copying media", mediaSource, mediaTarget);
+              fs.copyFileSync(mediaSource, mediaTarget);
             }
           }
         }
