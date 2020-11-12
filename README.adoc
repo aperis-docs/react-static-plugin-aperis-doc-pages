@@ -2,6 +2,8 @@
 
 Used with link:https://github.com/riboseinc/aperis-doc-pages/[aperis-doc-pages].
 
+NOTE: Currently, running on Windows is not supported.
+
 == Development
 
 === Preparation
