@@ -33,6 +33,10 @@ export default () => {
   const rootURLPath = urlPrefix === '' ? urlPrefix : `/${urlPrefix}/`;
   const bannerSrcPrefix = urlPrefix === '' ? '/' : `/${urlPrefix}/`;
 
+  if (!docPage?.data) {
+    return <p>Missing documentation page data at this path.</p>;
+  }
+
   return (
     <>
       <Helmet>
