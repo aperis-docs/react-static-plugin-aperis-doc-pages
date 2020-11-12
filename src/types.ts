@@ -14,6 +14,9 @@ export interface PluginConfig {
 
 
 export interface ReactStaticState {
+  config: {
+    basePath?: string
+  }
   routes: {
     path: string
     data: any
