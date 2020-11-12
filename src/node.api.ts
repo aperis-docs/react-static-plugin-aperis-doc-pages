@@ -58,8 +58,8 @@ export default ({
         if (!template) {
           const _defaultTemplateSrc = path.join(__dirname, 'DefaultDocPage');
           const _defaultTemplate = path.join(process.cwd(), '_DocPage');
-          shell(`mkdir -p ${_defaultTemplate}`);
-          shell(`cp -r ${_defaultTemplateSrc}/* ${_defaultTemplate}`)
+          shell(`mkdir -p "${_defaultTemplate}"`);
+          shell(`cp -r "${_defaultTemplateSrc}/*" "${_defaultTemplate}"`)
           effectiveTemplate = '_DocPage/index';
         } else {
           effectiveTemplate = template;
