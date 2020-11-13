@@ -31,7 +31,8 @@ export interface DocsRoute extends Route {
 
 
 export interface DocsPageRouteData {
-  urlPrefix: string
+  docsURLPrefix: string
+  siteURLPrefix: string
   docPage: DocPage
   docsNav: DocsPageNavItem[]
   title: string

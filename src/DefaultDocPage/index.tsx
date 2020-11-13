@@ -15,7 +15,8 @@ import { DocsPageRouteData } from '../types';
 export default () => {
   const {
     title,
-    urlPrefix,
+    siteURLPrefix,
+    docsURLPrefix,
     docPage,
     docsNav,
     headerBanner,
@@ -27,11 +28,13 @@ export default () => {
   const routePath = (useRoutePath as () => string)();
 
   function pathIsCurrent(path: string, relative?: string | boolean) {
-    return normalizeInternalHRef(loc, path, relative) === `/${routePath}/`;
+    const normalizedRoutePath = normalizeInternalHRef(loc, path, relative);
+    return normalizedRoutePath === `/${prefix ? `${prefix}/` : ''}${routePath}/`;
   }
 
-  const rootURLPath = urlPrefix === '' ? urlPrefix : `/${urlPrefix}/`;
-  const bannerSrcPrefix = urlPrefix === '' ? '/' : `/${urlPrefix}/`;
+  const prefix = `${siteURLPrefix}/${docsURLPrefix}`.replace(/^\//, '').replace(/\/$/, '');
+  const rootURLPath = prefix === '' ? prefix : `/${prefix}/`;
+  const bannerSrcPrefix = prefix === '' ? '/' : `/${prefix}/`;
 
   if (!docPage?.data) {
     return <p>Missing documentation page data at this path.</p>;

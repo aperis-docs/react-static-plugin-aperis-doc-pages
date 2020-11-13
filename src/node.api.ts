@@ -49,6 +49,7 @@ export default ({
 
     getRoutes: async (routes: Route[], _state: ReactStaticState) => {
       const docsDirTree = dirTree(sourcePath, { extensions: /\.yaml$/ });
+      const basePath = _state.config.basePath || '';
 
       if (docsDirTree) {
         docsDirTree.name = urlPrefix;
@@ -80,8 +81,15 @@ export default ({
           ...[docsDirTree].map(entry => dirEntryToDocsRoute(
               entry,
               [],
-              effectiveTemplate,
-              { urlPrefix, docsNav, title, headerBanner, footerBanner, footerBannerLink })),
+              effectiveTemplate, {
+                siteURLPrefix: basePath,
+                docsURLPrefix: urlPrefix,
+                docsNav,
+                title,
+                headerBanner,
+                footerBanner,
+                footerBannerLink,
+              })),
         ];
 
       } else {
