@@ -102,25 +102,44 @@ export default ({
       const docsSrcPrefix = path.basename(sourcePath);
       const docsOutPrefix = `dist/${urlPrefix}`;
 
+      console.debug("After export: Processing page media…");
+      console.debug("| URL prefix", docsURLPrefix);
+      console.debug("| Source path prefix", docsSrcPrefix);
+      console.debug("| output path prefix", docsOutPrefix);
+
+      console.debug("| Copying banners…");
+
       fs.copyFileSync(path.join(headerBanner), path.join(docsOutPrefix, headerBanner));
       fs.copyFileSync(path.join(footerBanner), path.join(docsOutPrefix, footerBanner));
+
+      console.debug("| | Done");
+
+      console.debug("| Processing routes…");
 
       for (const r of state.routes) {
         if (docsURLPrefix === '/' || r.path === urlPrefix || r.path.indexOf(docsURLPrefix) === 0) {
           const id = r.path.replace(docsURLPrefix, '');
           const _data = r.data?.docPage?.data;
+          console.debug("| | Processing docs page route with path", r.path, "and parsed ID", id);
           if (!_data) {
+            console.debug("| | | No route data found, skipping");
           } else {
             const media = (_data.media || []);
+            const pageSourcePath = (r._isIndexFile && r.path !== urlPrefix) ? id : path.dirname(id);
+            const pageTargetPath = (r.path !== urlPrefix) ? id : path.dirname(id);
+            console.debug("| | | Page source path", pageSourcePath);
+            console.debug("| | | Page target path", pageTargetPath);
+            console.debug("| | | Copying media files…");
             for (const f of media) {
-              const pageSourcePath = (r._isIndexFile && r.path !== urlPrefix) ? id : path.dirname(id);
-              const pageTargetPath = (r.path !== urlPrefix) ? id : path.dirname(id);
               const mediaSource = `${docsSrcPrefix}/${pageSourcePath}/${f.filename}`;
               const mediaTarget = `${docsOutPrefix}/${pageTargetPath}/${f.filename}`;
-              console.debug("Copying media", mediaSource, mediaTarget);
+              console.debug("| | | | Copying file", mediaSource, mediaTarget);
               fs.copyFileSync(mediaSource, mediaTarget);
+              console.debug("| | | | | Done");
             }
           }
+        } else {
+          console.debug("| | Skipping non-docs-page route with path", r.path);
         }
       }
 
