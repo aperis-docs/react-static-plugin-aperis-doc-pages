@@ -118,7 +118,9 @@ export default ({
 
       for (const r of state.routes) {
         if (docsURLPrefix === '/' || r.path === urlPrefix || r.path.indexOf(docsURLPrefix) === 0) {
-          const id = r.path.replace(docsURLPrefix, '');
+          const id = r.path.startsWith(docsURLPrefix)
+            ? r.path.replace(docsURLPrefix, '')
+            : r.path;
           const _data = r.data?.docPage?.data;
           console.debug("| | Processing docs page route with path", r.path, "and parsed ID", id);
           if (!_data) {
