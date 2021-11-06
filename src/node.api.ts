@@ -126,18 +126,28 @@ export default ({
           if (!_data) {
             console.debug("| | | No route data found, skipping");
           } else {
-            const media = (_data.media || []);
-            const pageSourcePath = (r._isIndexFile && r.path !== urlPrefix) ? id : path.dirname(id);
-            const pageTargetPath = (r.path !== urlPrefix) ? id : path.dirname(id);
-            console.debug("| | | Page source path", pageSourcePath);
-            console.debug("| | | Page target path", pageTargetPath);
-            console.debug("| | | Copying media files…");
-            for (const f of media) {
-              const mediaSource = `${docsSrcPrefix}/${pageSourcePath}/${f.filename}`;
-              const mediaTarget = `${docsOutPrefix}/${pageTargetPath}/${f.filename}`;
-              console.debug("| | | | Copying file", mediaSource, mediaTarget);
-              fs.copyFileSync(mediaSource, mediaTarget);
-              console.debug("| | | | | Done");
+            if (r._isIndexFile) {
+              const mediaSourcePath = `${docsSrcPrefix}/${id}/_media`;
+              try {
+                const mediaFilenames = fs.readdirSync(mediaSourcePath);
+                const pageTargetPath = (r.path !== urlPrefix) ? id : path.dirname(id);
+                console.debug("| | | Page media source path", mediaSourcePath);
+                console.debug("| | | Page target path", pageTargetPath);
+                console.debug("| | | Copying media files…");
+                for (const fname of mediaFilenames) {
+                  const mediaSource = `${mediaSourcePath}/${fname}`;
+                  const mediaTarget = `${docsOutPrefix}/${pageTargetPath}/${fname}`;
+                  console.debug("| | | | Copying file", mediaSource, mediaTarget);
+                  fs.copyFileSync(mediaSource, mediaTarget);
+                  console.debug("| | | | | Done");
+                }
+              } catch (e) {
+                if ((e as any).code === 'ENOENT') {
+                  continue;
+                } else {
+                  throw e;
+                }
+              }
             }
           }
         } else {
