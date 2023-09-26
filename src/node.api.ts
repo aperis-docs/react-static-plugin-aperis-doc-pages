@@ -346,9 +346,13 @@ interface RichContentConversionOptions {
 }
 
 
+// TODO: Refactor this function into separate functions for ADoc and PM
 function convertRichContentToHTML(
+    /** Either a string in AsciiDoc markup, or a ProseMirror document. */
     data: string | ProseMirrorStructure,
+    /** ProseMirror schema. */
     schema: Schema<any, any>,
+    /** AsciiDoctor options. */
     opts?: RichContentConversionOptions,
 ): string {
   if (isProseMirrorStructure(data)) {
